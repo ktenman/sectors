@@ -18,16 +18,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 	
+	private static final String DEFAULT_NAME = "John Doe";
+	
 	@Test
 	void saveProfile_ShouldReturnSavedProfile() throws Exception {
 		CreateProfileRequest createProfileRequest = CreateProfileRequest.builder()
-				.name("John Doe")
+				.name(DEFAULT_NAME)
 				.agreeToTerms(true)
 				.sectors(List.of(2L, 22L))
 				.build();
 		PofileDTO expectedResponse = PofileDTO.builder()
 				.id(1L)
-				.name("John Doe")
+				.name(DEFAULT_NAME)
 				.agreeToTerms(true)
 				.sessionId("dummySessionId")
 				.sectors(List.of(2L, 22L))
@@ -45,8 +47,8 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 		assertThat(profiles).isNotEmpty()
 				.first()
 				.satisfies(p -> {
-					assertThat(p.getName()).isEqualTo(createProfileRequest.getName());
-					assertThat(p.getAgreeToTerms()).isEqualTo(createProfileRequest.getAgreeToTerms());
+					assertThat(p.getName()).isEqualTo(DEFAULT_NAME);
+					assertThat(p.getAgreeToTerms()).isTrue();
 					assertThat(p.getSessionId()).isEqualTo("dummySessionId");
 					assertThat(p.getSectors())
 							.hasSize(2)
