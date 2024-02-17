@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @ToString
@@ -18,6 +17,5 @@ public class ProfileDTO {
 	private Long id;
 	private String name;
 	private Boolean agreeToTerms;
-	private UUID sessionId;
 	private List<Long> sectors;
 }

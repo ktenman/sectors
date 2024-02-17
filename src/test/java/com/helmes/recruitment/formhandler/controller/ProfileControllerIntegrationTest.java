@@ -41,7 +41,6 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 				.id(1L)
 				.name(DEFAULT_NAME)
 				.agreeToTerms(true)
-				.sessionId(sessionId)
 				.sectors(List.of(2L, 22L))
 				.build();
 		

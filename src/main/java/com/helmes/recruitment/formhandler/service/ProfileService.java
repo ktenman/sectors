@@ -44,7 +44,6 @@ public class ProfileService {
 				.id(savedProfile.getId())
 				.name(savedProfile.getName())
 				.agreeToTerms(savedProfile.getAgreeToTerms())
-				.sessionId(savedProfile.getSessionId())
 				.sectors(savedProfile.getSectors().stream().map(Sector::getId).toList())
 				.build();
 	}

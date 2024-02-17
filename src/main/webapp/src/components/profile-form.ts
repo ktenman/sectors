@@ -67,7 +67,6 @@ export default class ProfileForm extends Vue {
         try {
             await axios.post('/api/profile', this.profile)
                 .then(response => {
-                    this.profile.sessionId = response.data.sessionId;
                     window.sessionStorage.setItem('profileData', JSON.stringify(this.profile));
                 })
             this.alertType = 'success';
