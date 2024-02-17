@@ -15,8 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SectorDTO implements Serializable {
+	
 	private static final long serialVersionUID = -143526534123L;
+	
 	private Long id;
 	private String name;
 	private List<SectorDTO> children;
+	
 }

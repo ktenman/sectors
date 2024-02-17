@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Builder
 @Getter
@@ -27,7 +26,5 @@ public class CreateProfileRequest {
 	
 	@NotNull(message = "Agreement to terms is mandatory")
 	private Boolean agreeToTerms;
-	
-	private UUID sessionId;
 	
 }

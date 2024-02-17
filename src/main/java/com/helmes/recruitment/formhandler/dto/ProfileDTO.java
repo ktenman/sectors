@@ -14,8 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileDTO {
+	
 	private Long id;
 	private String name;
 	private Boolean agreeToTerms;
 	private List<Long> sectors;
+	
 }
