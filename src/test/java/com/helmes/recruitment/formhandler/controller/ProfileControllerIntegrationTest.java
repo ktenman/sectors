@@ -43,7 +43,7 @@ class ProfileControllerIntegrationTest {
 	private SessionService sessionService;
 	
 	@Test
-	void saveProfile_ShouldReturnSavedProfile() throws Exception {
+	void saveProfile_shouldReturnSavedProfile() throws Exception {
 		UUID sessionId = UUID.randomUUID();
 		Mockito.when(sessionService.getSession()).thenReturn(sessionId);
 		
