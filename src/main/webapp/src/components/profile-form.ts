@@ -65,7 +65,7 @@ export default class ProfileForm extends Vue {
             return;
         }
         try {
-            await axios.post('/api/profile', this.profile)
+            await axios.post('/api/profiles', this.profile)
                 .then(response => {
                     window.sessionStorage.setItem('profileData', JSON.stringify(this.profile));
                 })
