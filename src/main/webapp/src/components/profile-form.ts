@@ -4,13 +4,13 @@ import {ApiError} from "@/models/api-error";
 
 @Options({})
 export default class ProfileForm extends Vue {
-    profile = {
+    profile: Profile = {
         name: '',
-        sectors: [] as number[],
-        agreeToTerms: null,
+        sectors: [],
+        agreeToTerms: undefined,
     };
-
-    sectors: Array<{ id: number; name: string; children?: Array<{}> }> = [];
+    sectors: Sector[] = [];
+    flatSectors: Sector[] = [];
     showAlert = false;
     alertMessage = '';
     alertType = '';
@@ -22,21 +22,31 @@ export default class ProfileForm extends Vue {
     async fetchSectors() {
         try {
             const response = await axios.get('/api/sectors');
-            this.sectors = response.data;
+            this.flatSectors = this.processAndFlattenSectors(response.data);
         } catch (error) {
-            console.error("Could not fetch sectors", error);
+            this.showAlert = true;
+            this.alertMessage = "Failed to load sectors. Please try again.";
+            this.alertType = "error";
         }
     }
 
-    async submitForm() {
-        const payload = {
-            name: this.profile.name,
-            sectors: this.profile.sectors,
-            agreeToTerms: this.profile.agreeToTerms,
-        };
+    processAndFlattenSectors(sectors: Sector[], level: number = 0): Sector[] {
+        const flatSectors: Sector[] = [];
+        sectors.forEach(sector => {
+            const flatSector = {...sector, level};
+            flatSectors.push(flatSector);
 
+            if (sector.children && sector.children.length > 0) {
+                const childFlatSectors = this.processAndFlattenSectors(sector.children, level + 1);
+                flatSectors.push(...childFlatSectors);
+            }
+        });
+        return flatSectors;
+    }
+
+    async submitForm() {
         try {
-            await axios.post('/api/profile', payload);
+            await axios.post('/api/profile', this.profile);
             this.alertType = 'success';
             this.alertMessage = "Profile saved successfully";
             this.showAlert = true;
