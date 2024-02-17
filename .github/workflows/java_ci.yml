@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
-      - run: mvn -T 1C --quiet -Dparallel=methods -DthreadCount=2 --batch-mode test
+      - run: mvn --quiet test
 
   auto-merge-dependabot:
     name: 🤖 Auto merge dependabot PR
