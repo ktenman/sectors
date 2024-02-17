@@ -14,6 +14,7 @@ export default class ProfileForm extends Vue {
     showAlert = false;
     alertMessage = '';
     alertType = '';
+    formSubmitted = false;
 
     created() {
         this.fetchSectors();
@@ -44,7 +45,19 @@ export default class ProfileForm extends Vue {
         return flatSectors;
     }
 
+    get isNameValid() {
+        return !!this.profile.name.trim(); // Check if name is not empty after trimming whitespace
+    }
+
+    get atLeastOneSectorSelected() {
+        return this.profile.sectors.length > 0;
+    }
+
     async submitForm() {
+        this.formSubmitted = true;
+        if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
+            return;
+        }
         try {
             await axios.post('/api/profile', this.profile);
             this.alertType = 'success';
