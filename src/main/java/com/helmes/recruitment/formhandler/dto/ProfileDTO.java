@@ -7,16 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PofileDTO {
+public class ProfileDTO {
 	private Long id;
 	private String name;
 	private Boolean agreeToTerms;
-	private String sessionId;
+	private UUID sessionId;
 	private List<Long> sectors;
 }

@@ -4,11 +4,15 @@ import com.helmes.recruitment.formhandler.BaseIntegrationTest;
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
-import com.helmes.recruitment.formhandler.dto.PofileDTO;
+import com.helmes.recruitment.formhandler.dto.ProfileDTO;
+import com.helmes.recruitment.formhandler.service.SessionService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -20,18 +24,24 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 	
 	private static final String DEFAULT_NAME = "John Doe";
 	
+	@MockBean
+	private SessionService sessionService;
+	
 	@Test
 	void saveProfile_ShouldReturnSavedProfile() throws Exception {
+		UUID sessionId = UUID.randomUUID();
+		Mockito.when(sessionService.getSession()).thenReturn(sessionId);
+		
 		CreateProfileRequest createProfileRequest = CreateProfileRequest.builder()
 				.name(DEFAULT_NAME)
 				.agreeToTerms(true)
 				.sectors(List.of(2L, 22L))
 				.build();
-		PofileDTO expectedResponse = PofileDTO.builder()
+		ProfileDTO expectedResponse = ProfileDTO.builder()
 				.id(1L)
 				.name(DEFAULT_NAME)
 				.agreeToTerms(true)
-				.sessionId("dummySessionId")
+				.sessionId(sessionId)
 				.sectors(List.of(2L, 22L))
 				.build();
 		
@@ -49,7 +59,7 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 				.satisfies(p -> {
 					assertThat(p.getName()).isEqualTo(DEFAULT_NAME);
 					assertThat(p.getAgreeToTerms()).isTrue();
-					assertThat(p.getSessionId()).isEqualTo("dummySessionId");
+					assertThat(p.getSessionId()).isEqualTo(sessionId);
 					assertThat(p.getSectors())
 							.hasSize(2)
 							.extracting(Sector::getId, Sector::getName)

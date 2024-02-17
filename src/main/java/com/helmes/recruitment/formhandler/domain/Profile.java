@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -33,7 +34,7 @@ public class Profile {
 	
 	private String name;
 	private Boolean agreeToTerms;
-	private String sessionId;
+	private UUID sessionId;
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(

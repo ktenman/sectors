@@ -3,7 +3,7 @@ package com.helmes.recruitment.formhandler.controller;
 
 import com.helmes.recruitment.formhandler.configuration.aspect.Loggable;
 import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
-import com.helmes.recruitment.formhandler.dto.PofileDTO;
+import com.helmes.recruitment.formhandler.dto.ProfileDTO;
 import com.helmes.recruitment.formhandler.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ProfileController {
 	
 	@PostMapping
 	@Loggable
-	public PofileDTO saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
+	public ProfileDTO saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
 		return profileService.saveProfile(createProfileRequest);
 	}
 }
