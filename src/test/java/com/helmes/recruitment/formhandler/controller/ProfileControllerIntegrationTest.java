@@ -1,16 +1,21 @@
 package com.helmes.recruitment.formhandler.controller;
 
-import com.helmes.recruitment.formhandler.BaseIntegrationTest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.helmes.recruitment.formhandler.IntegrationTest;
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.service.SessionService;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,9 +25,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ProfileControllerIntegrationTest extends BaseIntegrationTest {
+@IntegrationTest
+class ProfileControllerIntegrationTest {
 	
 	private static final String DEFAULT_NAME = "John Doe";
+	
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private EntityManager entityManager;
 	
 	@MockBean
 	private SessionService sessionService;
@@ -49,6 +64,7 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 						"SELECT p FROM Profile p JOIN FETCH p.sectors", Profile.class)
 				.getResultList();
 		
+		Instant now = Instant.now();
 		assertThat(profiles).isNotEmpty()
 				.first()
 				.satisfies(p -> {
@@ -62,6 +78,8 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 									tuple(2L, "Service"),
 									tuple(22L, "Tourism")
 							);
+					assertThat(p.getCreatedAt()).isNotNull().isBefore(now);
+					assertThat(p.getUpdatedAt()).isNotNull().isBefore(now);
 				});
 	}
 	

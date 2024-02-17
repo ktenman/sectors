@@ -1,8 +1,11 @@
 package com.helmes.recruitment.formhandler.controller;
 
-import com.helmes.recruitment.formhandler.BaseIntegrationTest;
+import com.helmes.recruitment.formhandler.IntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -11,7 +14,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class SectorControllerIntegrationTest extends BaseIntegrationTest {
+@IntegrationTest
+class SectorControllerIntegrationTest {
+	
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
 	
 	@Test
 	void whenGetAllSectors_thenReturns200AndSectorList() throws Exception {
