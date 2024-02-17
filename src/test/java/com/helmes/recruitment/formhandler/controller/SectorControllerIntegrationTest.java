@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helmes.recruitment.formhandler.IntegrationTest;
 import com.helmes.recruitment.formhandler.dto.SectorDTO;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -13,12 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IntegrationTest
-class SectorControllerTest {
+class SectorControllerIntegrationTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -36,7 +31,6 @@ class SectorControllerTest {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
-	
 	
 	@Test
 	void whenGetAllSectors_thenReturns200AndSectorList() throws Exception {
