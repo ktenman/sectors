@@ -2,5 +2,7 @@ CREATE TABLE sector
 (
     id        BIGINT PRIMARY KEY,
     name      VARCHAR(255) NOT NULL,
-    parent_id BIGINT REFERENCES sector (id)
+    parent_id  BIGINT REFERENCES sector (id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

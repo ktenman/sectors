@@ -5,8 +5,12 @@ CREATE TABLE profile
     id             BIGSERIAL PRIMARY KEY,
     name           VARCHAR(255) NOT NULL,
     agree_to_terms BOOLEAN      NOT NULL,
-    session_id UUID NOT NULL UNIQUE
+    session_id UUID        NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER SEQUENCE profile_id_seq OWNED BY profile.id;
 
 CREATE TABLE profile_sector
 (
