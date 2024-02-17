@@ -71,4 +71,5 @@ public class LoggingAspect {
 		String resultJson = objectMapper.writeValueAsString(result);
 		log.info("{} exited with result: {} in {} seconds", joinPoint.getSignature().toShortString(), resultJson, durationInSeconds(startTime));
 	}
+	
 }
