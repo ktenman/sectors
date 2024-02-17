@@ -27,23 +27,8 @@ export default class ProfileForm extends Vue {
         })
     }
 
-    processAndFlattenSectors(sectors: Sector[], level: number = 0): Sector[] {
-        const flatSectors: Sector[] = [];
-        sectors.forEach(sector => {
-            const flatSector = {...sector, level};
-            flatSectors.push(flatSector);
-
-            if (sector.children && sector.children.length > 0) {
-                const childFlatSectors = this.processAndFlattenSectors(sector.children, level + 1);
-                flatSectors.push(...childFlatSectors);
-            }
-        });
-        return flatSectors;
-    }
-
     async fetchSectors() {
-        const response = await axios.get('/api/sectors');
-        this.sectors = this.processAndFlattenSectors(response.data)
+        await axios.get('/api/sectors').then(response => this.sectors = response.data)
     }
 
     async getProfile() {

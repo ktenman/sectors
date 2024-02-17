@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/sectors")
@@ -21,7 +21,7 @@ public class SectorController {
 	
 	@GetMapping
 	@Loggable
-	public List<SectorDTO> getAllSectors() {
-		return sectorService.getAllSectorsWithChildren();
+	public Set<SectorDTO> getAllSectors() {
+		return sectorService.getAllSectors();
 	}
 }

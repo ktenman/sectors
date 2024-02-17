@@ -4,6 +4,9 @@
       <div class="col-md-6">
         <form @submit.prevent="submitForm">
           <div class="mb-3">
+            <h5>Please enter your name and pick the Sectors you are currently involved in.</h5>
+          </div>
+          <div class="mb-3">
             <label class="form-label" for="name">Name:</label>
             <input id="name" v-model="profile.name" :maxlength="64" class="form-control" type="text">
             <div v-if="this.profile.name.length > 30" class="text-danger">Name must not exceed 30 characters.</div>
@@ -11,7 +14,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
-            <select id="sectors" v-model="profile.sectors" class="form-select" multiple>
+            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple>
               <option v-for="sector in indentedSectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
@@ -42,3 +45,9 @@
 
 <script lang="ts" src="./profile-form.ts">
 </script>
+
+<style scoped>
+.custom-height {
+  height: 25vh;
+}
+</style>
