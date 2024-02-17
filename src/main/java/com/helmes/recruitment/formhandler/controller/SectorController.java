@@ -1,7 +1,7 @@
 package com.helmes.recruitment.formhandler.controller;
 
 import com.helmes.recruitment.formhandler.configuration.logging.aspect.Loggable;
-import com.helmes.recruitment.formhandler.dto.SectorDTO;
+import com.helmes.recruitment.formhandler.models.SectorDTO;
 import com.helmes.recruitment.formhandler.service.SectorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

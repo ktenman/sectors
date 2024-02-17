@@ -2,8 +2,8 @@ package com.helmes.recruitment.formhandler.controller;
 
 
 import com.helmes.recruitment.formhandler.configuration.logging.aspect.Loggable;
-import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
-import com.helmes.recruitment.formhandler.dto.ProfileDTO;
+import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
+import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

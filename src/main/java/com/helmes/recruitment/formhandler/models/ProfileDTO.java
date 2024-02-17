@@ -1,4 +1,4 @@
-package com.helmes.recruitment.formhandler.dto;
+package com.helmes.recruitment.formhandler.models;
 
 import java.util.List;
 

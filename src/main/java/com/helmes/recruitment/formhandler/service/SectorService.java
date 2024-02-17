@@ -2,7 +2,7 @@ package com.helmes.recruitment.formhandler.service;
 
 import com.helmes.recruitment.formhandler.configuration.RedisConfiguration;
 import com.helmes.recruitment.formhandler.domain.Sector;
-import com.helmes.recruitment.formhandler.dto.SectorDTO;
+import com.helmes.recruitment.formhandler.models.SectorDTO;
 import com.helmes.recruitment.formhandler.repository.SectorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;

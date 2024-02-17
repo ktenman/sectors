@@ -2,8 +2,8 @@ package com.helmes.recruitment.formhandler.service;
 
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
-import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
-import com.helmes.recruitment.formhandler.dto.ProfileDTO;
+import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
+import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
 import com.helmes.recruitment.formhandler.service.lock.LockSession;
 import lombok.RequiredArgsConstructor;
