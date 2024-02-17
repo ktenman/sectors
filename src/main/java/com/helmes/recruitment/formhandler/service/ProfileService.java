@@ -37,7 +37,21 @@ public class ProfileService {
 				savedProfile.getId(),
 				savedProfile.getName(),
 				savedProfile.getAgreeToTerms(),
-				sectors.stream().map(Sector::getId).toList()
+				sectors.stream().map(Sector::getId).toList(),
+				sessionId
 		);
 	}
+	
+	public ProfileDTO getProfile(UUID sessionId) {
+		return profileRepository.findBySessionId(sessionId).map(
+				p -> new ProfileDTO(
+						p.getId(),
+						p.getName(),
+						p.getAgreeToTerms(),
+						p.getSectors().stream().map(Sector::getId).toList(),
+						p.getSessionId()
+				)
+		).orElseThrow(() -> new IllegalArgumentException(String.format("Profile not found for sessionId: %s", sessionId)));
+	}
+	
 }

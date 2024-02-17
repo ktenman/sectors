@@ -46,12 +46,28 @@ export default class ProfileForm extends Vue {
         this.sectors = this.processAndFlattenSectors(response.data)
     }
 
+    async getProfile() {
+        const sessionItem = window.sessionStorage.getItem('sessionId') ?? "null"
+        const sessionId = JSON.parse(sessionItem)
+        if (!sessionId) {
+            return
+        }
+        await axios.get(`/api/profiles/${sessionId}`).then(response => {
+            this.profile = response.data
+        }).catch(error => {
+            console.error('Failed to fetch profile:', error)
+        })
+    }
+
     created() {
         this.fetchSectors().catch(() => {
             this.showAlert = true;
             this.alertMessage = "Failed to load sectors. Please try again.";
             this.alertType = "error";
         });
+        this.getProfile().catch(error => {
+            console.error('Failed to handle profile:', error)
+        })
     }
 
     get atLeastOneSectorSelected() {
@@ -68,7 +84,12 @@ export default class ProfileForm extends Vue {
             return;
         }
         try {
-            await axios.post('/api/profiles', this.profile)
+            await axios.post('/api/profiles', this.profile).then(
+                response => {
+                    this.profile.sessionId = response.data.sessionId
+                    window.sessionStorage.setItem('sessionId', JSON.stringify(response.data.sessionId))
+                }
+            )
             this.alertType = 'success';
             this.alertMessage = "Profile saved successfully";
             this.showAlert = true;

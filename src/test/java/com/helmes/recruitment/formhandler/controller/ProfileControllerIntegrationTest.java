@@ -52,7 +52,7 @@ class ProfileControllerIntegrationTest {
 				.agreeToTerms(true)
 				.sectors(List.of(2L, 22L))
 				.build();
-		ProfileDTO expectedResponse = new ProfileDTO(1L, DEFAULT_NAME, true, List.of(2L, 22L));
+		ProfileDTO expectedResponse = new ProfileDTO(1L, DEFAULT_NAME, true, List.of(2L, 22L), sessionId);
 		
 		mockMvc.perform(post("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON)
