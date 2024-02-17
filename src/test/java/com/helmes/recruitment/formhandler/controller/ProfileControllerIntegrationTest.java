@@ -44,7 +44,7 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 				.sectors(List.of(2L, 22L))
 				.build();
 		
-		mockMvc.perform(post("/api/profile")
+		mockMvc.perform(post("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(createProfileRequest)))
 				.andExpect(status().isOk())
