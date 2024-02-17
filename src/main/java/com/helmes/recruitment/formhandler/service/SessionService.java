@@ -10,10 +10,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SessionService {
 	
-	private final HttpServletRequest request;
+	private final HttpServletRequest httpServletRequest;
 	
 	public UUID getSession() {
-		String sessionId = request.getSession(true).getId();
+		String sessionId = httpServletRequest.getSession(true).getId();
 		return UUID.fromString(sessionId);
 	}
 	

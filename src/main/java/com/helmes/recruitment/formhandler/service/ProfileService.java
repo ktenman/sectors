@@ -24,12 +24,11 @@ public class ProfileService {
 	public ProfileDTO saveProfile(CreateProfileRequest createProfileRequest) {
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
 		UUID sessionId = sessionService.getSession();
-		Profile profile = profileRepository.findBySessionId(sessionId).orElseGet(Profile::new);
 		
+		Profile profile = profileRepository.findBySessionId(sessionId).orElseGet(Profile::new);
 		profile.setName(createProfileRequest.getName());
 		profile.setAgreeToTerms(createProfileRequest.getAgreeToTerms());
 		profile.setSectors(sectors);
-		profile.setSessionId(sessionId);
 		profile.setSessionId(sessionId);
 		
 		Profile savedProfile = profileRepository.save(profile);
