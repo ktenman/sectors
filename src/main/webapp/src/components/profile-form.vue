@@ -7,13 +7,12 @@
             <label class="form-label" for="name">Name:</label>
             <input id="name" v-model="profile.name" :maxlength="64" class="form-control" type="text">
             <div v-if="this.profile.name.length > 30" class="text-danger">Name must not exceed 30 characters.</div>
-            <div v-if="formSubmitted && !isNameValid" class="text-danger">Name is required</div>
+            <div v-if="formSubmitted && !this.profile.name.trim()" class="text-danger">Name is required</div>
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
             <select id="sectors" v-model="profile.sectors" class="form-select" multiple>
-              <option v-for="sector in flatSectors" :key="sector.id" :style="{ paddingLeft: `${sector.level * 10}px` }"
-                      :value="sector.id">
+              <option v-for="sector in indentedSectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
             </select>

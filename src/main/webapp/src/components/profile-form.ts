@@ -10,19 +10,26 @@ export default class ProfileForm extends Vue {
         agreeToTerms: undefined,
     };
     sectors: Sector[] = [];
-    flatSectors: Sector[] = [];
     showAlert = false;
     alertMessage = '';
     alertType = '';
     formSubmitted = false;
 
     get isNameValid() {
-        return !!this.profile.name.trim();
+        return !!this.profile.name.trim() && this.profile.name.length <= 30
     }
 
-    async fetchSectors() {
-        const response = await axios.get('/api/sectors');
-        this.flatSectors = this.processAndFlattenSectors(response.data);
+    get indentedSectors() {
+        return this.sectors.map(sector => {
+            if (typeof sector.level === 'number') {
+                // Use the Unicode non-breaking space character for indentation
+                return {
+                    ...sector,
+                    name: '\u00A0'.repeat(sector.level * 2) + sector.name
+                }
+            }
+            return sector
+        })
     }
 
     processAndFlattenSectors(sectors: Sector[], level: number = 0): Sector[] {
@@ -37,6 +44,11 @@ export default class ProfileForm extends Vue {
             }
         });
         return flatSectors;
+    }
+
+    async fetchSectors() {
+        const response = await axios.get('/api/sectors');
+        this.sectors = this.processAndFlattenSectors(response.data)
     }
 
     created() {
