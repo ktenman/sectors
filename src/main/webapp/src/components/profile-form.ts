@@ -16,13 +16,8 @@ export default class ProfileForm extends Vue {
     alertType = '';
     formSubmitted = false;
 
-    created() {
-        this.fetchSectors().catch(error => {
-            this.showAlert = true;
-            this.alertMessage = "Failed to load sectors. Please try again.";
-            this.alertType = "error";
-        });
-        this.loadProfileFromSession();
+    get isNameValid() {
+        return !!this.profile.name.trim();
     }
 
     async fetchSectors() {
@@ -44,8 +39,13 @@ export default class ProfileForm extends Vue {
         return flatSectors;
     }
 
-    get isNameValid() {
-        return !!this.profile.name.trim(); // Check if name is not empty after trimming whitespace
+    created() {
+        this.fetchSectors().catch(() => {
+            this.showAlert = true;
+            this.alertMessage = "Failed to load sectors. Please try again.";
+            this.alertType = "error";
+        });
+        this.loadProfileFromSession();
     }
 
     get atLeastOneSectorSelected() {
