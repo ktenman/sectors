@@ -36,26 +36,6 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(apiError, apiError.getStatus());
 	}
     
-    private Map<String, String> extractErrors(Exception exception) {
-        BindingResult bindingResult = null;
-        
-        if (exception instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
-            bindingResult = methodArgumentNotValidException.getBindingResult();
-        } else if (exception instanceof WebExchangeBindException webExchangeBindException) {
-            bindingResult = webExchangeBindException.getBindingResult();
-        }
-        
-        return Optional.ofNullable(bindingResult)
-                .map(BindingResult::getFieldErrors)
-                .map(fieldErrors -> fieldErrors.stream()
-                        .collect(Collectors.toMap(
-                                FieldError::getField,
-                                fieldError -> Optional.ofNullable(fieldError.getDefaultMessage()).orElse("Invalid value"),
-                                (existingValue, newValue) -> existingValue
-                        )))
-                .orElse(Collections.emptyMap());
-    }
-    
     private ResponseEntity<ApiError> handleValidationException(Exception exception) {
         Map<String, String> errors = extractErrors(exception);
         
@@ -68,6 +48,27 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+	
+	private Map<String, String> extractErrors(Exception exception) {
+		BindingResult bindingResult = null;
+		
+		if (exception instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
+			bindingResult = methodArgumentNotValidException.getBindingResult();
+		} else if (exception instanceof WebExchangeBindException webExchangeBindException) {
+			bindingResult = webExchangeBindException.getBindingResult();
+		}
+		
+		return Optional.ofNullable(bindingResult)
+				.map(BindingResult::getFieldErrors)
+				.map(fieldErrors -> fieldErrors.stream()
+						.collect(Collectors.toMap(
+								FieldError::getField,
+								fieldError -> Optional.ofNullable(fieldError.getDefaultMessage())
+										.orElse("Invalid value"),
+								(existingValue, newValue) -> existingValue
+						)))
+				.orElse(Collections.emptyMap());
+	}
 	
 	@Getter
 	@ToString

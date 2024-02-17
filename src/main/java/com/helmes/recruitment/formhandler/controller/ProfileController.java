@@ -1,6 +1,7 @@
 package com.helmes.recruitment.formhandler.controller;
 
 
+import com.helmes.recruitment.formhandler.configuration.aspect.Loggable;
 import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.dto.PofileDTO;
 import com.helmes.recruitment.formhandler.service.ProfileService;
@@ -19,6 +20,7 @@ public class ProfileController {
 	private final ProfileService profileService;
 	
 	@PostMapping
+	@Loggable
 	public PofileDTO saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
 		return profileService.saveProfile(createProfileRequest);
 	}
