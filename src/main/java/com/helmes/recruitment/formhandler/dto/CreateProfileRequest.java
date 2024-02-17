@@ -3,6 +3,7 @@ package com.helmes.recruitment.formhandler.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import java.util.List;
 public class CreateProfileRequest {
 	
 	@NotBlank(message = "Name is required")
+	@Size(max = 64, message = "Name must not exceed {max} characters")
 	private String name;
 	
 	@NotEmpty(message = "At least one sector must be selected")
