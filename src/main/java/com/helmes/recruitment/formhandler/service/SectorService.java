@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,10 @@ public class SectorService {
 				.name(sector.getName())
 				.children(children)
 				.build();
+	}
+	
+	public Set<Sector> findSectorsByIds(List<Long> sectorIds) {
+		return new HashSet<>(sectorRepository.findAllById(sectorIds));
 	}
 	
 }
