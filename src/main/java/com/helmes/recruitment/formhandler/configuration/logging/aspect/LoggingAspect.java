@@ -1,7 +1,7 @@
 package com.helmes.recruitment.formhandler.configuration.logging.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -18,11 +18,11 @@ import static com.helmes.recruitment.formhandler.configuration.TimeUtility.durat
 @Aspect
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class LoggingAspect {
 	
 	private static final String TRANSACTION_ID = "transactionId";
-	@Resource
-	private ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 	
 	private static void setTransactionId() {
 		UUID uuid = UUID.randomUUID();
