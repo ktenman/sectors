@@ -22,22 +22,15 @@ public class ProfileService {
 	
 	@LockSession
 	public ProfileDTO saveProfile(CreateProfileRequest createProfileRequest) {
-		UUID sessionId = sessionService.getSession();
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
-		Profile profile = profileRepository.findBySessionId(sessionId)
-				.map(existingProfile -> {
-							existingProfile.setName(createProfileRequest.getName());
-							existingProfile.setAgreeToTerms(createProfileRequest.getAgreeToTerms());
-							existingProfile.setSectors(sectors);
-							return existingProfile;
-						}
-				).orElse(Profile.builder()
-						.name(createProfileRequest.getName())
-						.agreeToTerms(createProfileRequest.getAgreeToTerms())
-						.sectors(sectors)
-						.sessionId(sessionId)
-						.build()
-				);
+		UUID sessionId = sessionService.getSession();
+		Profile profile = profileRepository.findBySessionId(sessionId).orElseGet(Profile::new);
+		
+		profile.setName(createProfileRequest.getName());
+		profile.setAgreeToTerms(createProfileRequest.getAgreeToTerms());
+		profile.setSectors(sectors);
+		profile.setSessionId(sessionId);
+		profile.setSessionId(sessionId);
 		
 		Profile savedProfile = profileRepository.save(profile);
 		return new ProfileDTO(
