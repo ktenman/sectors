@@ -19,10 +19,4 @@ public class SessionService {
 		return UUID.fromString(sessionId);
 	}
 	
-	public boolean isSessionValid(UUID sessionId) {
-		String sessionKey = "spring:session:sessions:" + sessionId;
-		Boolean exists = redisTemplate.hasKey(sessionKey);
-		return Boolean.TRUE.equals(exists);
-	}
-	
 }
