@@ -20,7 +20,7 @@ export default class ProfileForm extends Vue {
             if (typeof sector.level === 'number') {
                 return {
                     ...sector,
-                    name: '\u00A0'.repeat(sector.level * 2) + sector.name
+                    name: '\u00A0'.repeat(sector.level * 3) + sector.name
                 }
             }
             return sector
