@@ -17,18 +17,17 @@ export default class ProfileForm extends Vue {
     formSubmitted = false;
 
     created() {
-        this.fetchSectors();
-    }
-
-    async fetchSectors() {
-        try {
-            const response = await axios.get('/api/sectors');
-            this.flatSectors = this.processAndFlattenSectors(response.data);
-        } catch (error) {
+        this.fetchSectors().catch(error => {
             this.showAlert = true;
             this.alertMessage = "Failed to load sectors. Please try again.";
             this.alertType = "error";
-        }
+        });
+        this.loadProfileFromSession();
+    }
+
+    async fetchSectors() {
+        const response = await axios.get('/api/sectors');
+        this.flatSectors = this.processAndFlattenSectors(response.data);
     }
 
     processAndFlattenSectors(sectors: Sector[], level: number = 0): Sector[] {
@@ -53,6 +52,13 @@ export default class ProfileForm extends Vue {
         return this.profile.sectors.length > 0;
     }
 
+    loadProfileFromSession() {
+        const storedProfile = window.sessionStorage.getItem('profileData');
+        if (storedProfile) {
+            this.profile = JSON.parse(storedProfile);
+        }
+    }
+
     async submitForm() {
         this.formSubmitted = true;
         if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
@@ -62,6 +68,7 @@ export default class ProfileForm extends Vue {
             await axios.post('/api/profile', this.profile)
                 .then(response => {
                     this.profile.sessionId = response.data.sessionId;
+                    window.sessionStorage.setItem('profileData', JSON.stringify(this.profile));
                 })
             this.alertType = 'success';
             this.alertMessage = "Profile saved successfully";
@@ -76,10 +83,8 @@ export default class ProfileForm extends Vue {
                 );
                 this.alertMessage = `${apiError.message}: ${apiError.debugMessage}`;
                 if (Object.keys(apiError.validationErrors).length > 0) {
-                    this.alertMessage = `${apiError.message}: `;
-                    const validationMessages = Object.entries(apiError.validationErrors)
+                    this.alertMessage += Object.entries(apiError.validationErrors)
                         .map(([field, message]) => `${message}`).join(", ");
-                    this.alertMessage += validationMessages;
                 }
             } else {
                 this.alertMessage = "An unexpected error occurred. Please try again.";
@@ -92,5 +97,4 @@ export default class ProfileForm extends Vue {
             }, 5000);
         }
     }
-
 }
