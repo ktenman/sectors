@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
-import ProfileForm from "./components/profile-form.vue";
+import {Options, Vue} from 'vue-class-component'
+import ProfileForm from "./components/profile-form.vue"
 
 @Options({
   components: {

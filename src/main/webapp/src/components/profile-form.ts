@@ -1,6 +1,6 @@
-import axios from 'axios';
-import {Options, Vue} from 'vue-class-component';
-import {ApiError} from "@/models/api-error";
+import axios from 'axios'
+import {Options, Vue} from 'vue-class-component'
+import {ApiError} from "@/models/api-error"
 
 @Options({})
 export default class ProfileForm extends Vue {

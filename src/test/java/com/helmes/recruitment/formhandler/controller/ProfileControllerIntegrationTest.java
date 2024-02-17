@@ -37,12 +37,7 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 				.agreeToTerms(true)
 				.sectors(List.of(2L, 22L))
 				.build();
-		ProfileDTO expectedResponse = ProfileDTO.builder()
-				.id(1L)
-				.name(DEFAULT_NAME)
-				.agreeToTerms(true)
-				.sectors(List.of(2L, 22L))
-				.build();
+		ProfileDTO expectedResponse = new ProfileDTO(1L, DEFAULT_NAME, true, List.of(2L, 22L));
 		
 		mockMvc.perform(post("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -53,6 +48,7 @@ class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 		List<Profile> profiles = entityManager.createQuery(
 						"SELECT p FROM Profile p JOIN FETCH p.sectors", Profile.class)
 				.getResultList();
+		
 		assertThat(profiles).isNotEmpty()
 				.first()
 				.satisfies(p -> {

@@ -5,9 +5,9 @@ import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.dto.ProfileDTO;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
+import com.helmes.recruitment.formhandler.service.lock.LockSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class ProfileService {
 	private final SectorService sectorService;
 	private final SessionService sessionService;
 	
-	@Transactional
+	@LockSession
 	public ProfileDTO saveProfile(CreateProfileRequest createProfileRequest) {
 		UUID sessionId = sessionService.getSession();
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
@@ -40,11 +40,11 @@ public class ProfileService {
 				);
 		
 		Profile savedProfile = profileRepository.save(profile);
-		return ProfileDTO.builder()
-				.id(savedProfile.getId())
-				.name(savedProfile.getName())
-				.agreeToTerms(savedProfile.getAgreeToTerms())
-				.sectors(savedProfile.getSectors().stream().map(Sector::getId).toList())
-				.build();
+		return new ProfileDTO(
+				savedProfile.getId(),
+				savedProfile.getName(),
+				savedProfile.getAgreeToTerms(),
+				sectors.stream().map(Sector::getId).toList()
+		);
 	}
 }

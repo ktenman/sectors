@@ -24,4 +24,5 @@ public class ProfileController {
 	public ProfileDTO saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
 		return profileService.saveProfile(createProfileRequest);
 	}
+	
 }
