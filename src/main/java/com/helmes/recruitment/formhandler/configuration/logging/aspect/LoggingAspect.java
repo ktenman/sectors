@@ -1,4 +1,4 @@
-package com.helmes.recruitment.formhandler.configuration.aspect;
+package com.helmes.recruitment.formhandler.configuration.logging.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -35,7 +35,7 @@ public class LoggingAspect {
         MDC.remove(TRANSACTION_ID);
     }
     
-    @Around("@annotation(com.helmes.recruitment.formhandler.configuration.aspect.Loggable)")
+    @Around("@annotation(com.helmes.recruitment.formhandler.configuration.logging.aspect.Loggable)")
     public Object logMethod(ProceedingJoinPoint joinPoint) {
         long startTime = System.nanoTime();
         
@@ -58,7 +58,7 @@ public class LoggingAspect {
             return result;
         } catch (Throwable throwable) {
             log.error("Exception in method: {}", joinPoint.getSignature().toShortString(), throwable);
-            throw new RuntimeException(throwable);
+            throw new LoggingAspectException(throwable);
         } finally {
             if (!(result instanceof Mono)) {
                 clearTransactionId();

@@ -1,4 +1,4 @@
-package com.helmes.recruitment.formhandler.configuration.aspect;
+package com.helmes.recruitment.formhandler.configuration.logging.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
