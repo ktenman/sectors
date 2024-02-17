@@ -1,16 +1,12 @@
 package com.helmes.recruitment.formhandler.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.helmes.recruitment.formhandler.IntegrationTest;
+import com.helmes.recruitment.formhandler.BaseIntegrationTest;
 import com.helmes.recruitment.formhandler.dto.SectorDTO;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -20,17 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@IntegrationTest
-class SectorControllerIntegrationTest {
-	
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@Autowired
-	private ResourceLoader resourceLoader;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
+class SectorControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@Test
 	void whenGetAllSectors_thenReturns200AndSectorList() throws Exception {

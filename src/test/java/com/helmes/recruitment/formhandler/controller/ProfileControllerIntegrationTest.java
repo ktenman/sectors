@@ -1,17 +1,12 @@
 package com.helmes.recruitment.formhandler.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.helmes.recruitment.formhandler.IntegrationTest;
+import com.helmes.recruitment.formhandler.BaseIntegrationTest;
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.dto.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.dto.PofileDTO;
-import jakarta.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
@@ -21,19 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@IntegrationTest
-@Slf4j
-class ProfileControllerIntegrationTest {
-	
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
-	
-	@Autowired
-	private EntityManager entityManager;
+class ProfileControllerIntegrationTest extends BaseIntegrationTest {
 	
 	@Test
 	void saveProfile_ShouldReturnSavedProfile() throws Exception {
