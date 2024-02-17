@@ -13,12 +13,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none # Use 'update' for development
-    show-sql: true
+    show-sql: false
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         temp.use_jdbc_metadata_defaults: false
         id.new_generator_mappings: true
         cache.use_second_level_cache: false

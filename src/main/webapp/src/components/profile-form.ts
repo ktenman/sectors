@@ -18,7 +18,6 @@ export default class ProfileForm extends Vue {
     get indentedSectors() {
         return this.sectors.map(sector => {
             if (typeof sector.level === 'number') {
-                // Use the Unicode non-breaking space character for indentation
                 return {
                     ...sector,
                     name: '\u00A0'.repeat(sector.level * 2) + sector.name
@@ -53,18 +52,10 @@ export default class ProfileForm extends Vue {
             this.alertMessage = "Failed to load sectors. Please try again.";
             this.alertType = "error";
         });
-        this.loadProfileFromSession();
     }
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0;
-    }
-
-    loadProfileFromSession() {
-        const storedProfile = window.sessionStorage.getItem('profileData');
-        if (storedProfile) {
-            this.profile = JSON.parse(storedProfile);
-        }
     }
 
     private get isNameValid() {
@@ -78,9 +69,6 @@ export default class ProfileForm extends Vue {
         }
         try {
             await axios.post('/api/profiles', this.profile)
-                .then(response => {
-                    window.sessionStorage.setItem('profileData', JSON.stringify(this.profile));
-                })
             this.alertType = 'success';
             this.alertMessage = "Profile saved successfully";
             this.showAlert = true;

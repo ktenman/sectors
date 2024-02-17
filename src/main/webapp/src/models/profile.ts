@@ -1,5 +1,5 @@
 interface Profile {
-    name: '';
+    name: string;
     sectors: number[];
     agreeToTerms?: boolean;
 }
