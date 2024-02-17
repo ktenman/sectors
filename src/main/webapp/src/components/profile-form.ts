@@ -15,10 +15,6 @@ export default class ProfileForm extends Vue {
     alertType = '';
     formSubmitted = false;
 
-    get isNameValid() {
-        return !!this.profile.name.trim() && this.profile.name.length <= 30
-    }
-
     get indentedSectors() {
         return this.sectors.map(sector => {
             if (typeof sector.level === 'number') {
@@ -69,6 +65,10 @@ export default class ProfileForm extends Vue {
         if (storedProfile) {
             this.profile = JSON.parse(storedProfile);
         }
+    }
+
+    private get isNameValid() {
+        return !!this.profile.name.trim() && this.profile.name.length <= 30
     }
 
     async submitForm() {
