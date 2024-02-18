@@ -1,6 +1,9 @@
 package com.helmes.recruitment.formhandler.models;
 
-import org.springframework.http.HttpStatus;
-
-public record ServiceResult<T>(T body, HttpStatus status) {
+public record ServiceResult<T>(T body, ServiceOutcome outcome) {
+	public enum ServiceOutcome {
+		CREATED,
+		UPDATED,
+	}
 }
+

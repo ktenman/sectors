@@ -7,6 +7,7 @@ import com.helmes.recruitment.formhandler.models.ServiceResult;
 import com.helmes.recruitment.formhandler.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,11 @@ public class ProfileController {
 	@Loggable
 	public ResponseEntity<ProfileDTO> saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
 		ServiceResult<ProfileDTO> serviceResult = profileService.saveProfile(createProfileRequest);
-		return ResponseEntity.status(serviceResult.status()).body(serviceResult.body());
+		HttpStatus status = switch (serviceResult.outcome()) {
+			case CREATED -> HttpStatus.CREATED;
+			case UPDATED -> HttpStatus.OK;
+		};
+		return ResponseEntity.status(status).body(serviceResult.body());
 	}
 	
 	@GetMapping

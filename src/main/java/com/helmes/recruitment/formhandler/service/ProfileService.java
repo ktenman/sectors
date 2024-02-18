@@ -6,21 +6,21 @@ import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.models.ServiceResult;
+import com.helmes.recruitment.formhandler.models.ServiceResult.ServiceOutcome;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
 import com.helmes.recruitment.formhandler.service.lock.LockSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
 	
+	private static final String PROFILE_NOT_FOUND_MESSAGE = "Profile not found for sessionId: %s";
 	private final ProfileRepository profileRepository;
 	private final SectorService sectorService;
 	private final SessionService sessionService;
@@ -39,26 +39,20 @@ public class ProfileService {
 		
 		Profile savedProfile = profileRepository.save(profile);
 		
-		ProfileDTO profileDTO = toProfileDTO(savedProfile);
-		HttpStatus httpStatus = existingProfile.isPresent() ? HttpStatus.OK : HttpStatus.CREATED;
-		
-		return new ServiceResult<>(profileDTO, httpStatus);
+		return new ServiceResult<>(
+				mapProfileToDTO(savedProfile),
+				existingProfile.isPresent() ? ServiceOutcome.UPDATED : ServiceOutcome.CREATED
+		);
 	}
 	
 	public ProfileDTO getProfile() {
 		UUID sessionId = sessionService.getSession();
-		Function<Profile, ProfileDTO> profileToDTO = p -> new ProfileDTO(
-				p.getId(),
-				p.getName(),
-				p.getAgreeToTerms(),
-				p.getSectors().stream().map(Sector::getId).toList()
-		);
 		return profileRepository.findBySessionId(sessionId)
-				.map(profileToDTO)
-				.orElseThrow(() -> new AccessDeniedException(String.format("Profile not found for sessionId: %s", sessionId)));
+				.map(this::mapProfileToDTO)
+				.orElseThrow(() -> new AccessDeniedException(String.format(PROFILE_NOT_FOUND_MESSAGE, sessionId)));
 	}
 	
-	private ProfileDTO toProfileDTO(Profile profile) {
+	private ProfileDTO mapProfileToDTO(Profile profile) {
 		return new ProfileDTO(
 				profile.getId(),
 				profile.getName(),
