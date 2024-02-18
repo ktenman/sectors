@@ -1,7 +1,6 @@
 package com.helmes.recruitment.formhandler.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.helmes.recruitment.formhandler.DBHelperService;
 import com.helmes.recruitment.formhandler.IntegrationTest;
 import com.helmes.recruitment.formhandler.configuration.exception.GlobalExceptionHandler.ApiError;
 import com.helmes.recruitment.formhandler.domain.Profile;
@@ -9,6 +8,7 @@ import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.service.SessionService;
+import jakarta.persistence.EntityManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -47,7 +48,7 @@ class ProfileControllerIntegrationTest {
 	private ObjectMapper objectMapper;
 	
 	@Autowired
-	private DBHelperService dbHelperService;
+	private EntityManager entityManager;
 	
 	@MockBean
 	private SessionService sessionService;
@@ -72,7 +73,7 @@ class ProfileControllerIntegrationTest {
 				.andExpect(status().isCreated())
 				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 		
-		List<Profile> profiles = dbHelperService.getProfiles();
+		List<Profile> profiles = findALLProfiles();
 		
 		Instant now = Instant.now();
 		assertThat(profiles).isNotEmpty()
@@ -94,9 +95,9 @@ class ProfileControllerIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
 	void updateProfile_givenValidData_thenReturnsUpdatedProfile() throws Exception {
-		dbHelperService.persist(aProfile());
-		
+		persist(aProfile());
 		List<Long> sectors = List.of(1L, 2L, 8L);
 		CreateProfileRequest createProfileRequest = CreateProfileRequest.builder()
 				.name(DEFAULT_NAME)
@@ -111,8 +112,7 @@ class ProfileControllerIntegrationTest {
 				.andExpect(status().isOk())
 				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 		
-		List<Profile> profiles = dbHelperService.getProfiles();
-		
+		List<Profile> profiles = findALLProfiles();
 		Instant now = Instant.now();
 		assertThat(profiles).isNotEmpty()
 				.first()
@@ -202,9 +202,10 @@ class ProfileControllerIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
 	void retrieveProfile_whenProfileExists_shouldReturnProfileDetailsSuccessfully() throws Exception {
 		Profile profile = aProfile();
-		dbHelperService.persist(profile);
+		persist(profile);
 		
 		MvcResult mvcResult = mockMvc.perform(get("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON))
@@ -230,6 +231,17 @@ class ProfileControllerIntegrationTest {
 		profile.setSectors(Set.of(sector));
 		
 		return profile;
+	}
+	
+	private List<Profile> findALLProfiles() {
+		return entityManager.createQuery(
+				"SELECT p FROM Profile p JOIN FETCH p.sectors", Profile.class
+		).getResultList();
+	}
+	
+	private void persist(Object entity) {
+		entityManager.persist(entity);
+		entityManager.flush();
 	}
 	
 }
