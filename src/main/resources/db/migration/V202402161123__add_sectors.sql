@@ -78,3 +78,6 @@ VALUES (1, 'Manufacturing', NULL),
        (114, 'Rail', 21),
        (112, 'Road', 21),
        (113, 'Water', 21);
+
+SELECT setval(pg_get_serial_sequence('sector', 'id'), MAX(id))
+FROM sector;
