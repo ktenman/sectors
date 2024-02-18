@@ -75,8 +75,7 @@ public class GlobalExceptionHandler {
 				.map(fieldErrors -> fieldErrors.stream()
 						.collect(Collectors.toMap(
 								FieldError::getField,
-								fieldError -> Optional.ofNullable(fieldError.getDefaultMessage())
-										.orElse("Invalid value"),
+								fieldError -> Optional.ofNullable(fieldError.getDefaultMessage()).orElse("Invalid value"),
 								(existingValue, newValue) -> existingValue
 						)))
 				.orElse(Collections.emptyMap());
