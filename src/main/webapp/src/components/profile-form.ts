@@ -61,11 +61,8 @@ export default class ProfileForm extends Vue {
                 }
             })
             .catch(error => {
-                if (error.response && error.response.status === 404) {
+                if (error.response && error.response.status === 403) {
                     console.log('Profile not found, ignoring.')
-                } else {
-                    // Log other errors
-                    console.error('Failed to fetch profile:', error)
                 }
             })
     }

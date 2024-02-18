@@ -1,5 +1,5 @@
 type CacheContent<T> = {
-    timestamp: number;
+    timestamp: number
     data: T
 };
 
