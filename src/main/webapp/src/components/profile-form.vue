@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <form @submit.prevent="submitForm">
           <div class="mb-3">
-            <h5>Please enter your name and pick the Sectors you are currently involved in.</h5>
+            <h6>Please enter your name and pick the Sectors you are currently involved in.</h6>
           </div>
           <div class="mb-3">
             <label class="form-label" for="name">Name:</label>

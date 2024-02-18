@@ -1,6 +1,7 @@
-import axios from 'axios'
-import {Options, Vue} from 'vue-class-component'
+import axios from "axios"
+import {Options, Vue} from "vue-class-component"
 import {ApiError} from "@/models/api-error"
+import {Cacheable} from "@/decorators/cacheable.decorator"
 
 @Options({})
 export default class ProfileForm extends Vue {
@@ -8,12 +9,16 @@ export default class ProfileForm extends Vue {
         name: '',
         sectors: [],
         agreeToTerms: undefined,
-    };
-    sectors: Sector[] = [];
-    showAlert = false;
-    alertMessage = '';
-    alertType = '';
-    formSubmitted = false;
+    }
+    sectors: Sector[] = []
+    showAlert = false
+    alertMessage = ''
+    alertType = ''
+    formSubmitted = false
+
+    get atLeastOneSectorSelected() {
+        return this.profile.sectors.length > 0
+    }
 
     get indentedSectors() {
         return this.sectors.map(sector => {
@@ -27,36 +32,43 @@ export default class ProfileForm extends Vue {
         })
     }
 
-    async fetchSectors() {
-        await axios.get('/api/sectors').then(response => this.sectors = response.data)
-    }
-
-    async getProfile() {
-        const sessionItem = window.sessionStorage.getItem('sessionId') ?? "null"
-        const sessionId = JSON.parse(sessionItem)
-        if (!sessionId) {
-            return
-        }
-        await axios.get(`/api/profiles/${sessionId}`).then(response => {
-            this.profile = response.data
-        }).catch(error => {
-            console.error('Failed to fetch profile:', error)
-        })
-    }
-
     created() {
-        this.fetchSectors().catch(() => {
-            this.showAlert = true;
-            this.alertMessage = "Failed to load sectors. Please try again.";
-            this.alertType = "error";
-        });
+        this.fetchSectors().then((sectors) => {
+            this.sectors = sectors
+        })
         this.getProfile().catch(error => {
             console.error('Failed to handle profile:', error)
         })
     }
 
-    get atLeastOneSectorSelected() {
-        return this.profile.sectors.length > 0;
+    @Cacheable('sectors')
+    async fetchSectors() {
+        try {
+            const response = await axios.get('/api/sectors')
+            this.sectors = response.data
+        } catch (error) {
+            this.showAlert = true
+            this.alertMessage = "Failed to load sectors. Please try again."
+            this.alertType = "error"
+        }
+        return this.sectors
+    }
+
+    async getProfile() {
+        await axios.get(`/api/profiles`)
+            .then(response => {
+                if (response.status === 200) {
+                    this.profile = response.data
+                }
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 404) {
+                    console.log('Profile not found, ignoring.')
+                } else {
+                    // Log other errors
+                    console.error('Failed to fetch profile:', error)
+                }
+            })
     }
 
     private get isNameValid() {
@@ -64,20 +76,15 @@ export default class ProfileForm extends Vue {
     }
 
     async submitForm() {
-        this.formSubmitted = true;
+        this.formSubmitted = true
         if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
-            return;
+            return
         }
         try {
-            await axios.post('/api/profiles', this.profile).then(
-                response => {
-                    this.profile.sessionId = response.data.sessionId
-                    window.sessionStorage.setItem('sessionId', JSON.stringify(response.data.sessionId))
-                }
-            )
-            this.alertType = 'success';
-            this.alertMessage = "Profile saved successfully";
-            this.showAlert = true;
+            await axios.post('/api/profiles', this.profile)
+            this.alertType = 'success'
+            this.alertMessage = "Profile saved successfully"
+            this.showAlert = true
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const apiError = new ApiError(
@@ -85,21 +92,21 @@ export default class ProfileForm extends Vue {
                     error.response.data.message,
                     error.response.data.debugMessage,
                     error.response.data.validationErrors || {}
-                );
-                this.alertMessage = `${apiError.message}: ${apiError.debugMessage}`;
+                )
+                this.alertMessage = `${apiError.message}. ${apiError.debugMessage}`
                 if (Object.keys(apiError.validationErrors).length > 0) {
-                    this.alertMessage += Object.entries(apiError.validationErrors)
-                        .map(([field, message]) => `${message}`).join(", ");
+                    this.alertMessage += ": " + Object.entries(apiError.validationErrors)
+                        .map(([field, message]) => `${message}`).join(", ")
                 }
             } else {
-                this.alertMessage = "An unexpected error occurred. Please try again.";
+                this.alertMessage = "An unexpected error occurred. Please try again."
             }
-            this.alertType = 'error';
-            this.showAlert = true;
+            this.alertType = 'error'
+            this.showAlert = true
         } finally {
             setTimeout(() => {
-                this.showAlert = false;
-            }, 5000);
+                this.showAlert = false
+            }, 5000)
         }
     }
 }
