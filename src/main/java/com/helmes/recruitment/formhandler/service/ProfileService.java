@@ -5,11 +5,14 @@ import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.models.ProfileDTO;
+import com.helmes.recruitment.formhandler.models.ServiceResult;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
 import com.helmes.recruitment.formhandler.service.lock.LockSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -23,23 +26,23 @@ public class ProfileService {
 	private final SessionService sessionService;
 	
 	@LockSession
-	public ProfileDTO saveProfile(CreateProfileRequest createProfileRequest) {
+	public ServiceResult<ProfileDTO> saveProfile(CreateProfileRequest createProfileRequest) {
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
 		UUID sessionId = sessionService.getSession();
 		
-		Profile profile = profileRepository.findBySessionId(sessionId).orElseGet(Profile::new);
+		Optional<Profile> existingProfile = profileRepository.findBySessionId(sessionId);
+		Profile profile = existingProfile.orElseGet(Profile::new);
 		profile.setName(createProfileRequest.getName());
 		profile.setAgreeToTerms(createProfileRequest.getAgreeToTerms());
 		profile.setSectors(sectors);
 		profile.setSessionId(sessionId);
 		
 		Profile savedProfile = profileRepository.save(profile);
-		return new ProfileDTO(
-				savedProfile.getId(),
-				savedProfile.getName(),
-				savedProfile.getAgreeToTerms(),
-				sectors.stream().map(Sector::getId).toList()
-		);
+		
+		ProfileDTO profileDTO = toProfileDTO(savedProfile);
+		HttpStatus httpStatus = existingProfile.isPresent() ? HttpStatus.OK : HttpStatus.CREATED;
+		
+		return new ServiceResult<>(profileDTO, httpStatus);
 	}
 	
 	public ProfileDTO getProfile() {
@@ -53,6 +56,15 @@ public class ProfileService {
 		return profileRepository.findBySessionId(sessionId)
 				.map(profileToDTO)
 				.orElseThrow(() -> new AccessDeniedException(String.format("Profile not found for sessionId: %s", sessionId)));
+	}
+	
+	private ProfileDTO toProfileDTO(Profile profile) {
+		return new ProfileDTO(
+				profile.getId(),
+				profile.getName(),
+				profile.getAgreeToTerms(),
+				profile.getSectors().stream().map(Sector::getId).toList()
+		);
 	}
 	
 }

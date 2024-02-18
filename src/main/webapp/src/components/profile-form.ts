@@ -8,7 +8,7 @@ export default class ProfileForm extends Vue {
     profile: Profile = {
         name: '',
         sectors: [],
-        agreeToTerms: undefined,
+        agreeToTerms: false,
     }
     sectors: Sector[] = []
     showAlert = false
@@ -80,10 +80,11 @@ export default class ProfileForm extends Vue {
             return
         }
         try {
-            await axios.post('/api/profiles', this.profile)
-            this.alertType = 'success'
-            this.alertMessage = "Profile saved successfully"
-            this.showAlert = true
+            await axios.post('/api/profiles', this.profile).then(response => {
+                this.alertType = 'success'
+                this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
+                this.showAlert = true
+            })
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const apiError = new ApiError(
@@ -106,7 +107,6 @@ export default class ProfileForm extends Vue {
             setTimeout(() => {
                 this.showAlert = false
             }, 5000)
-            this.formSubmitted = false
         }
     }
 }
