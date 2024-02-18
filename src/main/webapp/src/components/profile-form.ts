@@ -106,6 +106,7 @@ export default class ProfileForm extends Vue {
             setTimeout(() => {
                 this.showAlert = false
             }, 5000)
+            this.formSubmitted = false
         }
     }
 }
