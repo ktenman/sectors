@@ -9,11 +9,13 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 
 @MappedSuperclass
 @Getter
+@Setter
 @NoArgsConstructor
 public abstract class BaseEntity {
 	
