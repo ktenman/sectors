@@ -57,7 +57,7 @@ class ProfileControllerIntegrationTest {
 		mockMvc.perform(post("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(createProfileRequest)))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 		
 		List<Profile> profiles = entityManager.createQuery(
