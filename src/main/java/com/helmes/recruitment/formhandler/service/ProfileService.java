@@ -25,6 +25,12 @@ public class ProfileService {
 	private final SectorService sectorService;
 	private final SessionService sessionService;
 	
+	/**
+	 * Saves the profile for the current session.
+	 *
+	 * @param createProfileRequest the request containing the profile data
+	 * @return the saved profile
+	 */
 	@LockSession
 	public ServiceResult<ProfileDTO> saveProfile(CreateProfileRequest createProfileRequest) {
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
@@ -45,6 +51,11 @@ public class ProfileService {
 		);
 	}
 	
+	/**
+	 * Retrieves the profile for the current session.
+	 *
+	 * @return the profile
+	 */
 	public ProfileDTO getProfile() {
 		UUID sessionId = sessionService.getSession();
 		return profileRepository.findBySessionId(sessionId)
