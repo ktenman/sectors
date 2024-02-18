@@ -2,6 +2,7 @@ package com.helmes.recruitment.formhandler.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helmes.recruitment.formhandler.IntegrationTest;
+import com.helmes.recruitment.formhandler.configuration.exception.GlobalExceptionHandler.ApiError;
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
@@ -9,12 +10,15 @@ import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
 import com.helmes.recruitment.formhandler.service.SessionService;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileControllerIntegrationTest {
 	
 	private static final String DEFAULT_NAME = "John Doe";
+	private static final String LONG_NAME_65_CHARS = RandomStringUtils.randomAlphabetic(65);
 	private static final UUID DEFAULT_SESSION_ID = UUID.randomUUID();
 	
 	@Autowired
@@ -136,5 +141,45 @@ class ProfileControllerIntegrationTest {
 					assertThat(p.getUpdatedAt()).isNotNull().isBefore(now);
 				});
 	}
+	
+	@Test
+	void saveProfile_withInvalidProfileData_returnsMultipleValidationErrors() throws Exception {
+		ResultActions resultActions = mockMvc.perform(post("/api/profiles")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{}"))
+				.andExpect(status().isBadRequest());
+		
+		ApiError apiError = objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), ApiError.class);
+		assertThat(apiError.getMessage()).isEqualTo("Validation error");
+		assertThat(apiError.getDebugMessage()).isEqualTo("One or more fields have an error");
+		assertThat(apiError.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(apiError.getValidationErrors()).hasSize(3)
+				.containsEntry("name", "Name is required")
+				.containsEntry("agreeToTerms", "Agreement to terms is mandatory")
+				.containsEntry("sectors", "At least one sector must be selected");
+	}
+	
+	@Test
+	void saveProfile_withInvalidProfileData_returnsValidationErrorForNameLength() throws Exception {
+		CreateProfileRequest createProfileRequest = CreateProfileRequest.builder()
+				.name(LONG_NAME_65_CHARS)
+				.agreeToTerms(true)
+				.sectors(List.of(1L))
+				.build();
+		
+		ResultActions resultActions = mockMvc.perform(post("/api/profiles")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(createProfileRequest)))
+				.andExpect(status().isBadRequest());
+		
+		ApiError apiError = objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), ApiError.class);
+		assertThat(apiError.getMessage()).isEqualTo("Validation error");
+		assertThat(apiError.getDebugMessage()).isEqualTo("One or more fields have an error");
+		assertThat(apiError.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(apiError.getValidationErrors()).hasSize(1)
+				.containsKey("name")
+				.containsValue("Name must not exceed 64 characters");
+	}
+	
 	
 }
