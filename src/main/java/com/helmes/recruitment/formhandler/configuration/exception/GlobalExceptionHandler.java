@@ -1,8 +1,9 @@
 package com.helmes.recruitment.formhandler.configuration.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -82,8 +83,9 @@ public class GlobalExceptionHandler {
 	}
 	
 	@Getter
-	@ToString
 	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class ApiError {
 		private HttpStatus status;
 		private String message;
