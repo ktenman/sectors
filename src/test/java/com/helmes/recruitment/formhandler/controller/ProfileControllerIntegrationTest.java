@@ -43,7 +43,7 @@ class ProfileControllerIntegrationTest {
 	private SessionService sessionService;
 	
 	@Test
-	void saveProfile_shouldReturnSavedProfile() throws Exception {
+	void whenSaveProfile_thenReturnsSavedProfile() throws Exception {
 		UUID sessionId = UUID.randomUUID();
 		Mockito.when(sessionService.getSession()).thenReturn(sessionId);
 		
@@ -52,7 +52,7 @@ class ProfileControllerIntegrationTest {
 				.agreeToTerms(true)
 				.sectors(List.of(2L, 22L))
 				.build();
-		ProfileDTO expectedResponse = new ProfileDTO(1L, DEFAULT_NAME, true, List.of(2L, 22L), sessionId);
+		ProfileDTO expectedResponse = new ProfileDTO(1L, DEFAULT_NAME, true, List.of(2L, 22L));
 		
 		mockMvc.perform(post("/api/profiles")
 						.contentType(MediaType.APPLICATION_JSON)

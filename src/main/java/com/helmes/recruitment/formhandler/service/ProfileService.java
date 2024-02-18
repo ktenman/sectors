@@ -1,5 +1,6 @@
 package com.helmes.recruitment.formhandler.service;
 
+import com.helmes.recruitment.formhandler.configuration.exception.AccessDeniedException;
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -36,21 +38,21 @@ public class ProfileService {
 				savedProfile.getId(),
 				savedProfile.getName(),
 				savedProfile.getAgreeToTerms(),
-				sectors.stream().map(Sector::getId).toList(),
-				sessionId
+				sectors.stream().map(Sector::getId).toList()
 		);
 	}
 	
-	public ProfileDTO getProfile(UUID sessionId) {
-		return profileRepository.findBySessionId(sessionId).map(
-				p -> new ProfileDTO(
-						p.getId(),
-						p.getName(),
-						p.getAgreeToTerms(),
-						p.getSectors().stream().map(Sector::getId).toList(),
-						p.getSessionId()
-				)
-		).orElseThrow(() -> new IllegalArgumentException(String.format("Profile not found for sessionId: %s", sessionId)));
+	public ProfileDTO getProfile() {
+		UUID sessionId = sessionService.getSession();
+		Function<Profile, ProfileDTO> profileToDTO = p -> new ProfileDTO(
+				p.getId(),
+				p.getName(),
+				p.getAgreeToTerms(),
+				p.getSectors().stream().map(Sector::getId).toList()
+		);
+		return profileRepository.findBySessionId(sessionId)
+				.map(profileToDTO)
+				.orElseThrow(() -> new AccessDeniedException(String.format("Profile not found for sessionId: %s", sessionId)));
 	}
 	
 }

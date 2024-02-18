@@ -54,9 +54,6 @@ public class LoggingAspect {
 			Object result = joinPoint.proceed();
 			logExit(joinPoint, result, startTime);
 			return result;
-		} catch (Throwable throwable) {
-			log.error("Exception in method: {}", joinPoint.getSignature().toShortString(), throwable);
-			throw throwable;
 		} finally {
 			clearTransactionId();
 		}

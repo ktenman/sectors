@@ -1,4 +1,4 @@
-package com.helmes.recruitment.formhandler.configuration;
+package com.helmes.recruitment.formhandler.configuration.exception;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +31,17 @@ public class GlobalExceptionHandler {
 				.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.message(exception.getLocalizedMessage())
 				.debugMessage("An internal error occurred")
+				.build();
+		
+		return new ResponseEntity<>(apiError, apiError.getStatus());
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ApiError> handleNotFoundException(AccessDeniedException exception) {
+		ApiError apiError = ApiError.builder()
+				.status(HttpStatus.FORBIDDEN)
+				.message(exception.getLocalizedMessage())
+				.debugMessage("Access to the requested resource is denied")
 				.build();
 		
 		return new ResponseEntity<>(apiError, apiError.getStatus());
