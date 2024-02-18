@@ -45,13 +45,12 @@ export default class ProfileForm extends Vue {
     async fetchSectors() {
         try {
             const response = await axios.get('/api/sectors')
-            this.sectors = response.data
+            return response.data
         } catch (error) {
             this.showAlert = true
             this.alertMessage = "Failed to load sectors. Please try again."
             this.alertType = "error"
         }
-        return this.sectors
     }
 
     async getProfile() {
