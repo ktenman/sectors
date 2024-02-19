@@ -10,8 +10,6 @@ CREATE TABLE profile
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER SEQUENCE profile_id_seq OWNED BY profile.id;
-
 CREATE TABLE profile_sector
 (
     profile_id BIGINT NOT NULL REFERENCES profile (id),

@@ -21,7 +21,7 @@ public class Profile extends BaseEntity {
 	private Boolean agreeToTerms;
 	private UUID sessionId;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
 			name = "profile_sector",
 			joinColumns = @JoinColumn(name = "profile_id"),
