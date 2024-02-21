@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,6 +28,6 @@ public class Profile extends BaseEntity {
 			joinColumns = @JoinColumn(name = "profile_id"),
 			inverseJoinColumns = @JoinColumn(name = "sector_id")
 	)
-	private Set<Sector> sectors;
+	private Set<Sector> sectors = new HashSet<>();
 	
 }

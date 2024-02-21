@@ -1,5 +1,5 @@
-interface Profile {
-    name: string;
-    sectors: number[];
-    agreeToTerms: boolean;
+export class Profile {
+    name: string = '';
+    sectors: number[] = [];
+    agreeToTerms: boolean = false;
 }

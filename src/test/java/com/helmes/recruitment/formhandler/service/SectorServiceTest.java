@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,20 +30,29 @@ class SectorServiceTest {
 		Sector sector2 = sector(2L, "Construction materials");
 		Sector sector3 = sector(3L, "Food and Beverage");
 		Sector sector4 = sector(4L, "Bakery & confectionery products");
-		sector1.setChildren(List.of(sector2, sector3));
-		sector3.setChildren(List.of(sector4));
-		
-		when(sectorRepository.findAll()).thenReturn(List.of(sector1, sector1, sector2, sector3, sector4));
+		sector1.setChildren(Set.of(sector2, sector3));
+		sector2.setChildren(Set.of(sector4));
+		when(sectorRepository.findAllParentSectors()).thenReturn(List.of(sector1));
 		
 		Set<SectorDTO> result = sectorService.getAllSectors();
 		
-		assertThat(result).isNotEmpty()
-				.extracting(SectorDTO::getId, SectorDTO::getName, SectorDTO::getLevel)
+		assertThat(result).hasSize(1)
+				.flatExtracting(SectorDTO::getId, SectorDTO::getName, SectorDTO::getLevel)
+				.containsExactly(1L, "Manufacturing", 0);
+		
+		
+		SectorDTO manufacturingDTO = result.iterator().next();
+		assertThat(manufacturingDTO.getChildren()).hasSize(2)
+				.flatExtracting(SectorDTO::getId, SectorDTO::getName, SectorDTO::getLevel)
 				.containsExactly(
-						tuple(1L, "Manufacturing", 0),
-						tuple(2L, "Construction materials", 1),
-						tuple(3L, "Food and Beverage", 1),
-						tuple(4L, "Bakery & confectionery products", 2)
+						2L, "Construction materials", 1,
+						3L, "Food and Beverage", 1
+				);
+		
+		assertThat(manufacturingDTO.getChildren().iterator().next().getChildren()).hasSize(1)
+				.flatExtracting(SectorDTO::getId, SectorDTO::getName, SectorDTO::getLevel)
+				.containsExactly(
+						4L, "Bakery & confectionery products", 2
 				);
 	}
 	

@@ -6,8 +6,8 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -17,7 +17,7 @@ public class Sector extends BaseEntity {
 	private String name;
 	@OneToMany
 	@JoinColumn(name = "parent_id")
-	private List<Sector> children = new ArrayList<>();
+	private Set<Sector> children = new HashSet<>();
 	
 }
 

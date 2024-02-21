@@ -14,12 +14,13 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
-            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple>
-              <option v-for="sector in indentedSectors" :key="sector.id" :value="sector.id">
+            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple
+                    @change="toggleSector(parseInt($event.target.value))">
+              <option v-for="sector in this.indentedSectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
             </select>
-            <div v-if="formSubmitted &&!atLeastOneSectorSelected" class="text-danger">At least one sector must be
+            <div v-if="formSubmitted && !atLeastOneSectorSelected" class="text-danger">At least one sector must be
               selected.
             </div>
           </div>

@@ -1,5 +1,6 @@
 interface Sector {
     id: number;
     name: string;
-    level?: number;
+    level: number;
+    children: Sector[];
 }
