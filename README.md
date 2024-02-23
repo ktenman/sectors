@@ -11,8 +11,8 @@ focusing on sectors selection, session management, and data persistence using mo
 
 Before you begin, ensure your system meets the following requirements:
 
-- Java: v21
-- Maven: v3.9
+- Java: v21.0.2
+- Maven: v3.9.5
 - Node.js: v20.11.1
 - npm: v10.2.4
 - Docker: v25.0.2
@@ -20,12 +20,12 @@ Before you begin, ensure your system meets the following requirements:
 
 ## Technical Stack
 
-- **Backend**: Spring Boot 3.2.2 with Spring Cloud 2023.0.0 for microservice architecture.
-- **Database**: PostgreSQL for data persistence and Flyway for database migration management.
+- **Backend**: Spring Boot v3.2 with Spring Cloud v2023.0 for microservice architecture.
+- **Database**: PostgresSQL for data persistence and Flyway for database migration management.
 - **Caching and Session Storage**: Redis, utilized for its performance benefits.
 - **Frontend**:
-    - Vue.js v3.2.13
-    - Bootstrap v5.3.2
+    - Vue.js v3.2
+    - Bootstrap v5.3
 - **Testing**: A combination of MockMvc, Testcontainers, Mockito, AssertJ, and JUnit for robust testing coverage.
 
 ## Database Design
