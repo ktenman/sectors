@@ -4,6 +4,7 @@ import {ApiError} from '@/models/api-error'
 import {Profile} from '@/models/profile';
 import {AlertType} from "@/models/alert-type";
 import {ApiService} from "@/services/api-service";
+import {Cacheable} from "@/decorators/cacheable.decorator";
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -51,6 +52,7 @@ export default class ProfileForm extends Vue {
         })
     }
 
+    @Cacheable('sectors')
     async fetchSectors() {
         try {
             const {data} = await this.apiService.fetchSectors();
