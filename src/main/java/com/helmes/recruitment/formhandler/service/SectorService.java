@@ -9,7 +9,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,8 +53,9 @@ public class SectorService {
 	private SectorDTO mapSectorToDTO(Sector sector, int currentLevel) {
 		Set<SectorDTO> childDTOs = sector.getChildren().isEmpty() ? Collections.emptySet() :
 				sector.getChildren().stream()
+						.sorted(Comparator.comparing(Sector::getName))
 						.map(childSector -> mapSectorToDTO(childSector, currentLevel + 1))
-						.collect(Collectors.toSet());
+						.collect(Collectors.toCollection(LinkedHashSet::new));
 		
 		return SectorDTO.builder()
 				.id(sector.getId())
