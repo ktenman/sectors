@@ -3,6 +3,7 @@ import {Vue} from 'vue-class-component'
 import {ApiError} from '@/models/api-error'
 import {Profile} from '@/models/profile';
 import {AlertType} from "@/models/alert-type";
+import {ApiService} from "@/services/api-service";
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -13,6 +14,7 @@ export default class ProfileForm extends Vue {
     alertMessage = ''
     alertType: AlertType | null = null
     formSubmitted = false
+    apiService: ApiService = new ApiService()
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
@@ -51,8 +53,8 @@ export default class ProfileForm extends Vue {
 
     async fetchSectors() {
         try {
-            const response = await axios.get('/api/sectors')
-            return response.data
+            const {data} = await this.apiService.fetchSectors();
+            return data;
         } catch (error) {
             this.showAlert = true
             this.alertMessage = 'Failed to load sectors. Please try again.'
@@ -61,7 +63,7 @@ export default class ProfileForm extends Vue {
     }
 
     async getProfile() {
-        await axios.get('/api/profiles')
+        this.apiService.getProfile()
             .then(response => {
                 if (response.status === 200) {
                     this.profile = response.data
@@ -95,9 +97,9 @@ export default class ProfileForm extends Vue {
             return
         }
         try {
-            await axios.post('/api/profiles', this.profile).then(response => {
+            this.apiService.submitProfile(this.profile).then(response => {
                 this.alertType = AlertType.SUCCESS
-                this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
+                this.alertMessage = response.status == 201 ? 'Profile saved successfully' : 'Profile updated'
                 this.showAlert = true
             })
         } catch (error) {
