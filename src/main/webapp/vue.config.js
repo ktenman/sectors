@@ -10,4 +10,7 @@ module.exports = defineConfig({
             },
         },
     },
+    configureWebpack: {
+        devtool: 'eval-source-map',
+    },
 })
