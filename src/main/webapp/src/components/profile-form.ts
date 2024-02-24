@@ -5,6 +5,7 @@ import {Profile} from '@/models/profile';
 import {AlertType} from "@/models/alert-type";
 import {ApiService} from "@/services/api-service";
 import {Cacheable} from "@/decorators/cacheable.decorator";
+import {CacheService} from "@/services/cache-service";
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -16,13 +17,14 @@ export default class ProfileForm extends Vue {
     alertType: AlertType | null = null
     formSubmitted = false
     apiService: ApiService = new ApiService()
+    cacheService: CacheService = new CacheService()
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
     }
 
     created() {
-        this.fetchSectors().then((sectors) => {
+        this.fetchSectors().then(sectors => {
             this.sectors = sectors
             const addSectorToMap = (sector: Sector) => {
                 this.sectorMap.set(sector.id, sector)
@@ -47,7 +49,11 @@ export default class ProfileForm extends Vue {
             };
             this.indentedSectors = processSectors(this.sectors);
         })
-        this.getProfile().catch(error => {
+        this.getProfile().then(profile => {
+            if (profile) {
+                this.profile = profile
+            }
+        }).catch(error => {
             console.error('Failed to handle profile:', error)
         })
     }
@@ -64,18 +70,20 @@ export default class ProfileForm extends Vue {
         }
     }
 
+    @Cacheable('profile')
     async getProfile() {
-        this.apiService.getProfile()
-            .then(response => {
-                if (response.status === 200) {
-                    this.profile = response.data
-                }
-            })
-            .catch(error => {
-                if (error.response && error.response.status === 403) {
-                    console.log('Profile not found, ignoring.')
-                }
-            })
+        try {
+            const {data} = await this.apiService.getProfile();
+            return data;
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response && error.response.status === 403) {
+                console.log('Profile not found, ignoring.')
+            } else {
+                this.showAlert = true
+                this.alertMessage = 'Failed to load profile. Please try again.'
+                this.alertType = AlertType.ERROR
+            }
+        }
     }
 
     toggleSector(sectorId: number) {
@@ -127,6 +135,7 @@ export default class ProfileForm extends Vue {
                 this.showAlert = false
                 this.alertType = null
             }, 5000)
+            this.cacheService.setItem<Profile>('profile', this.profile)
         }
     }
 }
