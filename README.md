@@ -95,18 +95,55 @@ npm install
 npm run serve
 ```
 
-## Building for Production
+## Running in Production
 
-**Package the Application**: Compile the backend and integrate the optimized frontend:
+To run the application in production, you can use Docker Compose. This simplifies the deployment process by
+orchestrating the startup of your application and its dependencies with a single command.
+
+### Steps:
+
+1. **Prepare the Environment:** Ensure all configuration files are correctly set up for production. This may
+   include `.env` files or specific changes within `docker-compose.yml`.
+
+2. **Build and Run with Docker Compose:** Navigate to the root directory of your project where the `docker-compose.yml`
+   file is located. Run the following command:
 
 ```bash
-mvn package
+docker-compose up -d
 ```
 
-**Run the Application**: With Docker containers running (`docker-compose up -d`), execute the JAR:
+This command will start all services defined in your `docker-compose.yml` file in detached mode, running in the
+background.
+
+3. **Verify the Deployment:** Ensure all services are up and running. You can check the status of your Docker containers
+   by executing:
 
 ```bash
-java -jar target/*.jar
+docker ps
+```
+
+For logs and troubleshooting, use:
+
+```bash
+docker-compose logs
+```
+
+Replace `<service_name>` with the name of the service you want to inspect.
+
+### Updating the Application
+
+To update the application or its services after making changes:
+
+1. Rebuild the services:
+
+```bash
+docker-compose build
+```
+
+2. Restart the services for the changes to take effect:
+
+```bash
+docker-compose up -d
 ```
 
 ## Continuous Integration and Deployment
