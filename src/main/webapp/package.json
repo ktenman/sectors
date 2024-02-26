@@ -11,7 +11,7 @@
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13",
+    "vue": "^3.4.20",
     "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
