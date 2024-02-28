@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@Entity
 @Setter
+@Entity
 public class Sector extends BaseEntity {
 	
 	private String name;
