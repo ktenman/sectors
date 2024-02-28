@@ -20,7 +20,7 @@ Before you begin, ensure your system meets the following requirements:
 
 ## Technical Stack
 
-- **Backend**: Spring Boot v3.2 with Spring Cloud v2023.0 for microservice architecture.
+- **Backend**: Spring Boot v3.2
 - **Database**: PostgresSQL for data persistence and Flyway for database migration management.
 - **Caching and Session Storage**: Redis, utilized for its performance benefits.
 - **Frontend**:

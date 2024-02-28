@@ -27,7 +27,6 @@ public class SectorDTO implements Serializable, Comparable<SectorDTO> {
 	private int level;
 	private Set<SectorDTO> children = new HashSet<>();
 	
-	
 	@Override
 	public int compareTo(SectorDTO o) {
 		return o.getName().compareTo(this.getName());
