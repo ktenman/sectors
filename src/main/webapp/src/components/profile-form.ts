@@ -106,13 +106,11 @@ export default class ProfileForm extends Vue {
         if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
             return
         }
-        try {
-            this.apiService.submitProfile(this.profile).then(response => {
-                this.alertType = AlertType.SUCCESS
-                this.alertMessage = response.status == 201 ? 'Profile saved successfully' : 'Profile updated'
-                this.showAlert = true
-            })
-        } catch (error) {
+        await this.apiService.submitProfile(this.profile).then(response => {
+            this.alertType = AlertType.SUCCESS
+            this.alertMessage = response.status == 201 ? 'Profile saved successfully' : 'Profile updated'
+            this.showAlert = true
+        }).catch(error => {
             if (axios.isAxiosError(error) && error.response) {
                 const apiError = new ApiError(
                     error.response.status,
@@ -130,12 +128,12 @@ export default class ProfileForm extends Vue {
             }
             this.alertType = AlertType.ERROR
             this.showAlert = true
-        } finally {
+        }).finally(() => {
             setTimeout(() => {
                 this.showAlert = false
                 this.alertType = null
             }, 5000)
             this.cacheService.setItem<Profile>('profile', this.profile)
-        }
+        });
     }
 }
