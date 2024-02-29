@@ -1,5 +1,6 @@
 package com.helmes.recruitment.formhandler.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -15,16 +16,20 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "CreateProfileRequest model for creating a new user profile")
 public class CreateProfileRequest {
 	
 	@NotBlank(message = "Name is required")
 	@Size(max = 64, message = "Name must not exceed {max} characters")
+	@Schema(description = "Name of the user", example = "John Doe")
 	private String name;
 	
 	@NotEmpty(message = "At least one sector must be selected")
+	@Schema(description = "List of sector IDs the user is interested in", example = "[1, 2, 3]")
 	private List<Long> sectors;
 	
 	@NotNull(message = "Agreement to terms is mandatory")
+	@Schema(description = "Whether the user agrees to the terms", example = "true")
 	private Boolean agreeToTerms;
 	
 }
