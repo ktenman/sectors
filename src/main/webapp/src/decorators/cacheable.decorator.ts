@@ -1,4 +1,4 @@
-import {CacheService} from "@/services/cache-service"
+import {CacheService} from '@/services/cache-service'
 
 export function Cacheable(key: string) {
     return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {

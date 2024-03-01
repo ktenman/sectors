@@ -1,5 +1,5 @@
 export class Profile {
-    name: string = '';
-    sectors: number[] = [];
-    agreeToTerms: boolean = false;
+    name: string = ''
+    sectors: number[] = []
+    agreeToTerms: boolean = false
 }

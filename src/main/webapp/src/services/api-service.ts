@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Profile} from "@/models/profile";
+import {Profile} from '@/models/profile'
 
 export class ApiService {
     async fetchSectors() {

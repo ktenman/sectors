@@ -1,11 +1,12 @@
 import axios from 'axios'
 import {Vue} from 'vue-class-component'
 import {ApiError} from '@/models/api-error'
-import {Profile} from '@/models/profile';
-import {AlertType} from "@/models/alert-type";
-import {ApiService} from "@/services/api-service";
-import {Cacheable} from "@/decorators/cacheable.decorator";
-import {CacheService} from "@/services/cache-service";
+import {Profile} from '@/models/profile'
+import {AlertType} from '@/models/alert-type'
+import {ApiService} from '@/services/api-service'
+import {Cacheable} from '@/decorators/cacheable.decorator'
+import {CacheService} from '@/services/cache-service'
+import {Sector} from '@/models/sector'
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -29,25 +30,25 @@ export default class ProfileForm extends Vue {
             const addSectorToMap = (sector: Sector) => {
                 this.sectorMap.set(sector.id, sector)
                 if (sector.children) {
-                    sector.children.forEach(addSectorToMap);
+                    sector.children.forEach(addSectorToMap)
                 }
-            };
-            this.sectors.forEach(addSectorToMap);
+            }
+            this.sectors.forEach(addSectorToMap)
 
             const processSectors = (sectors: Sector[], level = 0) => {
-                const result: Sector[] = [];
+                const result: Sector[] = []
                 sectors.forEach((sector) => {
                     result.push({
                         ...sector,
                         name: '\u00A0'.repeat(level * 3) + sector.name,
-                    });
+                    })
                     if (sector.children && sector.children.length > 0) {
-                        result.push(...processSectors(sector.children, level + 1));
+                        result.push(...processSectors(sector.children, level + 1))
                     }
-                });
-                return result;
-            };
-            this.indentedSectors = processSectors(this.sectors);
+                })
+                return result
+            }
+            this.indentedSectors = processSectors(this.sectors)
         })
         this.getProfile().then(profile => {
             if (profile) {
@@ -61,8 +62,8 @@ export default class ProfileForm extends Vue {
     @Cacheable('sectors')
     async fetchSectors() {
         try {
-            const {data} = await this.apiService.fetchSectors();
-            return data;
+            const {data} = await this.apiService.fetchSectors()
+            return data
         } catch (error) {
             this.showAlert = true
             this.alertMessage = 'Failed to load sectors. Please try again.'
@@ -73,8 +74,8 @@ export default class ProfileForm extends Vue {
     @Cacheable('profile')
     async getProfile() {
         try {
-            const {data} = await this.apiService.getProfile();
-            return data;
+            const {data} = await this.apiService.getProfile()
+            return data
         } catch (error) {
             if (axios.isAxiosError(error) && error.response && error.response.status === 403) {
                 console.log('Profile not found, ignoring.')
@@ -91,7 +92,7 @@ export default class ProfileForm extends Vue {
             this.profile.sectors.push(sector.id)
             sector.children.forEach(addChildren)
         }
-        const sector = this.sectorMap.get(sectorId);
+        const sector = this.sectorMap.get(sectorId)
         if (sector) {
             sector.children.forEach(addChildren)
         }
@@ -121,7 +122,7 @@ export default class ProfileForm extends Vue {
                 this.alertMessage = `${apiError.message}. ${apiError.debugMessage}`
                 if (Object.keys(apiError.validationErrors).length > 0) {
                     this.alertMessage += ': ' + Object.entries(apiError.validationErrors)
-                        .map(([field, message]) => `${message}`).join(', ')
+                        .map(([, message]) => `${message}`).join(', ')
                 }
             } else {
                 this.alertMessage = 'An unexpected error occurred. Please try again.'
@@ -134,6 +135,6 @@ export default class ProfileForm extends Vue {
                 this.alertType = null
             }, 5000)
             this.cacheService.setItem<Profile>('profile', this.profile)
-        });
+        })
     }
 }
