@@ -9,14 +9,13 @@
           <div class="mb-3">
             <label class="form-label" for="name">Name:</label>
             <input id="name" v-model="profile.name" :maxlength="64" class="form-control" type="text">
-            <div v-if="this.profile.name.length > 30" class="text-danger">Name must not exceed 30 characters.</div>
-            <div v-if="formSubmitted && !this.profile.name.trim()" class="text-danger">Name is required</div>
+            <div v-if="profile.name.length > 30" class="text-danger">Name must not exceed 30 characters.</div>
+            <div v-if="formSubmitted && !profile.name.trim()" class="text-danger">Name is required</div>
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
-            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple
-                    @change="toggleSector(parseInt($event.target.value))">
-              <option v-for="sector in this.indentedSectors" :key="sector.id" :value="sector.id">
+            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple @change="toggleSector($event)">
+              <option v-for="sector in indentedSectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
             </select>
@@ -33,8 +32,7 @@
             <button class="btn btn-primary" type="submit">Submit</button>
           </div>
           <div class="mb-3">
-            <div v-if="showAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']"
-                 role="alert">
+            <div v-if="showAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
               {{ alertMessage }}
             </div>
           </div>

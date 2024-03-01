@@ -1,10 +1,11 @@
-import {CacheService} from '@/services/cache-service'
+import {CacheService} from '../services/cache-service'
+
 
 export function Cacheable(key: string) {
-    return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+    return function (_target: object, _propertyName: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value
 
-        descriptor.value = async function (...args: any[]) {
+        descriptor.value = async function (...args: unknown[]) {
             const cacheService = new CacheService()
             const cachedData = cacheService.getItem(key)
             if (cachedData) {

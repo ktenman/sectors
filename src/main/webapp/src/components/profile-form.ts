@@ -1,12 +1,12 @@
 import axios from 'axios'
 import {Vue} from 'vue-class-component'
-import {ApiError} from '@/models/api-error'
-import {Profile} from '@/models/profile'
-import {AlertType} from '@/models/alert-type'
-import {ApiService} from '@/services/api-service'
-import {Cacheable} from '@/decorators/cacheable.decorator'
-import {CacheService} from '@/services/cache-service'
-import {Sector} from '@/models/sector'
+import {Profile} from '../models/profile'
+import {Sector} from '../models/sector'
+import {AlertType} from '../models/alert-type'
+import {ApiService} from '../services/api-service'
+import {CacheService} from '../services/cache-service'
+import {Cacheable} from '../decorators/cacheable.decorator'
+import {ApiError} from '../models/api-error'
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -24,8 +24,17 @@ export default class ProfileForm extends Vue {
         return this.profile.sectors.length > 0
     }
 
-    created() {
+    private get isNameValid() {
+        return !!this.profile.name.trim() && this.profile.name.length <= 30
+    }
+
+    created(this: ProfileForm): void {
         this.fetchSectors().then(sectors => {
+            if (!Array.isArray(sectors)) {
+                console.error('Expected sectors to be an array but received:', sectors)
+                this.sectors = [] // Ensure sectors is an array even if the fetch fails
+                return
+            }
             this.sectors = sectors
             const addSectorToMap = (sector: Sector) => {
                 this.sectorMap.set(sector.id, sector)
@@ -76,7 +85,7 @@ export default class ProfileForm extends Vue {
         try {
             const {data} = await this.apiService.getProfile()
             return data
-        } catch (error) {
+        } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response && error.response.status === 403) {
                 console.log('Profile not found, ignoring.')
             } else {
@@ -84,10 +93,14 @@ export default class ProfileForm extends Vue {
                 this.alertMessage = 'Failed to load profile. Please try again.'
                 this.alertType = AlertType.ERROR
             }
+            return Promise.reject(error)
         }
     }
 
-    toggleSector(sectorId: number) {
+    toggleSector(event: Event) {
+        const target = event.target as HTMLSelectElement
+        if (!target.value) return
+        const sectorId = parseInt(target.value)
         const addChildren = (sector: Sector) => {
             this.profile.sectors.push(sector.id)
             sector.children.forEach(addChildren)
@@ -96,10 +109,6 @@ export default class ProfileForm extends Vue {
         if (sector) {
             sector.children.forEach(addChildren)
         }
-    }
-
-    private get isNameValid() {
-        return !!this.profile.name.trim() && this.profile.name.length <= 30
     }
 
     async submitForm() {
