@@ -11,6 +11,6 @@ module.exports = defineConfig({
         },
     },
     configureWebpack: {
-        devtool: 'eval-source-map',
-    },
+        devtool: 'eval-source-map'
+    }
 })
