@@ -15,5 +15,3 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    # Allows you to limit updates to minor and patch versions
-    versioning-strategy: increase
