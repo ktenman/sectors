@@ -1,23 +1,20 @@
+# Build stage
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
 
 WORKDIR /app
 
-RUN apk --no-cache add curl
-
 COPY pom.xml .
-
 COPY src /app/src
-RUN mvn -T 1C --batch-mode --quiet package -DskipTests
 
-FROM bellsoft/liberica-runtime-container:jre-21-slim-musl
+RUN mvn --quiet package -DskipTests
+
+# Final stage
+FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
 
 WORKDIR /app
 
-RUN mkdir /app/cache && chown 1000:1000 /app/cache
-
-COPY --from=build /app/target/*.jar app.jar
-
-COPY --from=build /usr/bin/curl /usr/bin/curl
+# Copy the application JAR
+COPY --from=build /app/target/*.jar /app/app.jar
 
 # Set JAVA_OPTS for application-specific options
 ENV JAVA_OPTS="-Xms512m -Duser.timezone=Europe/Tallinn"
