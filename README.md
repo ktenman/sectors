@@ -12,7 +12,7 @@ focusing on sectors selection, session management, and data persistence using mo
 Before you begin, ensure your system meets the following requirements:
 
 - Java: v21.0.2
-- Maven: v3.9.5
+- Gradle: v8.5
 - Node.js: v20.11.1
 - npm: v10.2.4
 - Docker: v25.0.2
@@ -86,11 +86,11 @@ This step is crucial, especially before moving to production build, to ensure al
 
 ### Backend Setup
 
-Navigate to the backend directory and compile the Java application:
+Navigate to the backend directory and compile the Java application using Gradle:
 
 ```bash
-mvn clean install
-mvn spring-boot:run
+./gradlew clean build
+./gradlew bootRun
 ```
 
 ### Frontend Setup
