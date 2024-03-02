@@ -28,10 +28,9 @@ export default class ProfileForm extends Vue {
         return !!this.profile.name.trim() && this.profile.name.length <= 30
     }
 
-    created(this: ProfileForm): void {
+    created() {
         this.fetchSectors().then(sectors => {
             if (!Array.isArray(sectors)) {
-                console.error('Expected sectors to be an array but received:', sectors)
                 this.sectors = [] // Ensure sectors is an array even if the fetch fails
                 return
             }
@@ -63,8 +62,6 @@ export default class ProfileForm extends Vue {
             if (profile) {
                 this.profile = profile
             }
-        }).catch(error => {
-            console.error('Failed to handle profile:', error)
         })
     }
 
@@ -86,9 +83,7 @@ export default class ProfileForm extends Vue {
             const {data} = await this.apiService.getProfile()
             return data
         } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response && error.response.status === 403) {
-                console.log('Profile not found, ignoring.')
-            } else {
+            if (!(axios.isAxiosError(error) && error.response && error.response.status === 403)) {
                 this.showAlert = true
                 this.alertMessage = 'Failed to load profile. Please try again.'
                 this.alertType = AlertType.ERROR
