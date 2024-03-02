@@ -1,7 +1,7 @@
 interface ValidationErrors {
     [key: string]: string;
 }
-
+/* eslint-disable no-unused-vars */
 export class ApiError {
     constructor(
         public status: number | string,
@@ -11,3 +11,4 @@ export class ApiError {
     ) {
     }
 }
+/* eslint-enable no-unused-vars */
