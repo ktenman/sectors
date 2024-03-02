@@ -117,7 +117,7 @@ orchestrating the startup of your application and its dependencies with a single
    file is located. Run the following command:
 
 ```bash
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 This command will start all services defined in your `docker-compose.yml` file in detached mode, running in the
@@ -133,7 +133,7 @@ docker ps
 For logs and troubleshooting, use:
 
 ```bash
-docker-compose logs
+docker-compose -f docker-compose.yml logs
 ```
 
 Replace `<service_name>` with the name of the service you want to inspect.
@@ -145,13 +145,13 @@ To update the application or its services after making changes:
 1. Rebuild the services:
 
 ```bash
-docker-compose build
+docker-compose -f docker-compose.yml build
 ```
 
 2. Restart the services for the changes to take effect:
 
 ```bash
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 ## Continuous Integration and Deployment
