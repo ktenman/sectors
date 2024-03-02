@@ -98,7 +98,6 @@ Navigate to the backend directory and compile the Java application using Gradle:
 Install frontend dependencies and start the development server:
 
 ```bash
-cd ui
 npm install
 npm run dev
 ```

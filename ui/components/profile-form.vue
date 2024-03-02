@@ -15,7 +15,7 @@
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
             <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple @change="toggleSector($event)">
-              <option v-for="sector in indentedSectors" :key="sector.id" :value="sector.id">
+              <option v-for="sector in sectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
             </select>

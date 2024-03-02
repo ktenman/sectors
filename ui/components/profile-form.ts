@@ -10,7 +10,6 @@ import {ApiError} from '../models/api-error'
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
     sectors: Sector[] = []
-    indentedSectors: Sector[] = []
     sectorMap: Map<number, Sector> = new Map()
     showAlert = false
     alertMessage = ''
@@ -29,12 +28,11 @@ export default class ProfileForm extends Vue {
 
     created() {
         this.fetchSectors().then(sectors => {
-            this.processSectorsResponse(sectors)
+            this.sectorMap = this.createSectorMap(sectors)
+            this.sectors = this.indentSectors(sectors)
         })
-        this.getProfile().then(profile => {
-            if (profile) {
-                this.profile = profile
-            }
+        this.getProfile()?.then(profile => {
+            this.profile = profile ?? this.profile
         })
     }
 
@@ -57,10 +55,14 @@ export default class ProfileForm extends Vue {
         }
     }
 
-    processSectorsResponse(sectors: Sector[]) {
-        this.sectors = sectors
-        this.sectors.forEach(sector => this.sectorMap.set(sector.id, sector))
-        this.indentedSectors = this.indentSectors(this.sectors)
+    createSectorMap(sectors: Sector[]) {
+        const sectorMap: Map<number, Sector> = new Map()
+        const addSectorToMap = (sector: Sector) => {
+            sectorMap.set(sector.id, sector)
+            sector.children?.forEach(child => addSectorToMap(child))
+        }
+        sectors.forEach(addSectorToMap)
+        return sectorMap
     }
 
     indentSectors(sectors: Sector[], level = 0): Sector[] {
@@ -86,9 +88,7 @@ export default class ProfileForm extends Vue {
             sector.children.forEach(addChildren)
         }
         const sector = this.sectorMap.get(sectorId)
-        if (sector) {
-            sector.children.forEach(addChildren)
-        }
+        sector?.children.forEach(addChildren)
     }
 
     async submitForm() {

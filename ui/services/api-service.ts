@@ -22,8 +22,8 @@ export class ApiService {
         if (axios.isAxiosError(error) && error.response) {
             throw new ApiError(
                 error.response.status,
-                error.response.data.message ?? "Unknown error",
-                error.response.data.debugMessage ?? "An unknown error occurred. Is backend running?",
+                error.response.data.message ?? 'Unknown error',
+                error.response.data.debugMessage ?? 'An unknown error occurred. Is backend running?',
                 error.response.data.validationErrors ?? {}
             )
         }

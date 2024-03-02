@@ -1,7 +1,14 @@
 FROM node:21-slim as build
 
 WORKDIR /app
-COPY ui/ .
+COPY ui/ . \
+     package.json \
+     package-lock.json \
+     tsconfig.json \
+     tsconfig.node.json \
+     vite.config.ts \
+     vite-env.d.ts ./
+
 RUN npm install
 RUN npm run build
 
