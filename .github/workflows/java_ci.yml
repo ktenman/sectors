@@ -8,12 +8,12 @@ jobs:
   test:
     name: 🧪 Test with Gradle
     runs-on: ubuntu-latest
-    container: gradle:latest
+    container: gradle:jdk21
     steps:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
-      - run: ./gradlew --quiet test
+      - run: gradle test -q
 
   build-docker:
     name: 🔨 Build with Docker Compose
