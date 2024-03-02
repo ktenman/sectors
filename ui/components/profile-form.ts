@@ -54,7 +54,6 @@ export default class ProfileForm extends Vue {
             return await this.apiService.getProfile()
         } catch (error) {
             this.handleApiError('Failed to load profile. Please try again.', error)
-            return null
         }
     }
 
@@ -116,6 +115,10 @@ export default class ProfileForm extends Vue {
     handleApiError(defaultMessage: string, error: any) {
         this.showAlert = true
         if (error instanceof ApiError) {
+            if (error.status === 403) {
+                this.showAlert = false
+                return
+            }
             this.alertMessage = `${error.message}. ${error.debugMessage}`
             if (Object.keys(error.validationErrors).length > 0) {
                 this.alertMessage += ': ' + Object.entries(error.validationErrors)
