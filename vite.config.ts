@@ -16,6 +16,7 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true, // 'eval-source-map' is not directly supported in Vite, but 'true' enables source maps
+    outDir: '../dist', // This will output the build artifacts to /app/dist when the root is /app/ui
+    sourcemap: true,
   },
 })
