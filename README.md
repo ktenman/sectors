@@ -98,9 +98,9 @@ mvn spring-boot:run
 Install frontend dependencies and start the development server:
 
 ```bash
-cd src/main/webapp
+cd ui
 npm install
-npm run serve
+npm run dev
 ```
 
 ## Running in Production
