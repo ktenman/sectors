@@ -108,28 +108,24 @@ export default class ProfileForm extends Vue {
             setTimeout(() => {
                 this.showAlert = false
                 this.alertType = null
-            }, 5000)
+            }, 4_000)
             this.cacheService.setItem<Profile>('profile', this.profile)
         }
     }
 
     handleApiError(defaultMessage: string, error: any) {
         this.showAlert = true
-        if (error.response) {
-            const apiError = new ApiError(
-                error.response.status,
-                error.response.data.message,
-                error.response.data.debugMessage,
-                error.response.data.validationErrors || {}
-            )
-            this.alertMessage = `${apiError.message}. ${apiError.debugMessage}`
-            if (Object.keys(apiError.validationErrors).length > 0) {
-                this.alertMessage += ': ' + Object.entries(apiError.validationErrors)
+        if (error instanceof ApiError) {
+            this.alertMessage = `${error.message}. ${error.debugMessage}`
+            if (Object.keys(error.validationErrors).length > 0) {
+                this.alertMessage += ': ' + Object.entries(error.validationErrors)
                     .map(([, message]) => message).join(', ')
             }
+            this.alertType = AlertType.ERROR
         } else {
             this.alertMessage = defaultMessage
+            this.alertType = AlertType.ERROR
         }
-        this.alertType = AlertType.ERROR
     }
+
 }

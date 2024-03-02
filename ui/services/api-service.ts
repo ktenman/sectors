@@ -1,34 +1,32 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { Profile } from '../models/profile'
+import { ApiError } from '../models/api-error'
 
 export class ApiService {
     async fetchSectors() {
-        const response = await axios.get('/api/sectors').catch(error => {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`Error fetching sectors: ${error.message}`)
-            }
-            throw error
-        })
-        return response.data
+        const { data } = await axios.get('/api/sectors').catch(this.handleError)
+        return data
     }
 
     async getProfile() {
-        const response = await axios.get('/api/profiles').catch(error => {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`Error fetching profile: ${error.message}`)
-            }
-            throw error
-        })
-        return response.data
+        const { data } = await axios.get('/api/profiles').catch(this.handleError)
+        return data
     }
 
     async submitProfile(profile: Profile) {
-        return await axios.post('/api/profiles', profile).catch(error => {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`Error submitting profile: ${error.message}`)
-            }
-            throw error
-        })
+        const { data } = await axios.post('/api/profiles', profile).catch(this.handleError)
+        return data
     }
 
+    private handleError(error: AxiosError<ApiError>): never {
+        if (axios.isAxiosError(error) && error.response) {
+            throw new ApiError(
+                error.response.status,
+                error.response.data.message,
+                error.response.data.debugMessage,
+                error.response.data.validationErrors
+            )
+        }
+        throw error
+    }
 }
