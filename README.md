@@ -21,11 +21,12 @@ Before you begin, ensure your system meets the following requirements:
 ## Technical Stack
 
 - **Backend**: Spring Boot v3.2
-- **Database**: PostgresSQL for data persistence and Flyway for database migration management.
-- **Caching and Session Storage**: Redis, utilized for its performance benefits.
 - **Frontend**:
+    - **Build Tool**: Vite is used as the build tool for the frontend, leveraging its fast build times and efficient module replacement to enhance the development experience.
     - Vue.js v3.2
     - Bootstrap v5.3
+- **Database**: PostgreSQL for data persistence and Flyway for database migration management.
+- **Caching and Session Storage**: Redis, utilized for its performance benefits.
 - **Testing**: A combination of MockMvc, Testcontainers, Mockito, AssertJ, and JUnit for robust testing coverage.
 
 ## Database Design
@@ -62,6 +63,13 @@ overview of each table and their relationships:
 - A **profile** can select multiple **sectors**, and a **sector** can be associated with multiple **profiles**,
   establishing a many-to-many relationship through the **profile_sector** table.
 - **sectors** can have a hierarchical structure, where each **sector** may reference another **sector** as its parent.
+
+## API Documentation
+
+The application provides comprehensive API documentation using OpenAPI 3.0. You can access this documentation at:
+
+- When running the application with Docker Compose: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- When running the application directly through IntelliJ: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 
 ## Setup and Running Instructions
 
