@@ -1,6 +1,6 @@
 # Form Handler Application
 
-[![Build & Test](https://github.com/ktenman/sectors/actions/workflows/java_ci.yml/badge.svg)](https://github.com/ktenman/sectors/actions/workflows/java_ci.yml)
+[![Build & Test](https://github.com/ktenman/sectors/actions/workflows/ci.yml/badge.svg)](https://github.com/ktenman/sectors/actions/workflows/ci.yml)
 ## Introduction
 
 This Form Handler application is designed to streamline the process of submitting information through a dynamic form,
