@@ -1,4 +1,3 @@
-import axios from 'axios'
 import {Vue} from 'vue-class-component'
 import {Profile} from '../models/profile'
 import {Sector} from '../models/sector'
@@ -30,33 +29,7 @@ export default class ProfileForm extends Vue {
 
     created() {
         this.fetchSectors().then(sectors => {
-            if (!Array.isArray(sectors)) {
-                this.sectors = [] // Ensure sectors is an array even if the fetch fails
-                return
-            }
-            this.sectors = sectors
-            const addSectorToMap = (sector: Sector) => {
-                this.sectorMap.set(sector.id, sector)
-                if (sector.children) {
-                    sector.children.forEach(addSectorToMap)
-                }
-            }
-            this.sectors.forEach(addSectorToMap)
-
-            const processSectors = (sectors: Sector[], level = 0) => {
-                const result: Sector[] = []
-                sectors.forEach((sector) => {
-                    result.push({
-                        ...sector,
-                        name: '\u00A0'.repeat(level * 3) + sector.name,
-                    })
-                    if (sector.children && sector.children.length > 0) {
-                        result.push(...processSectors(sector.children, level + 1))
-                    }
-                })
-                return result
-            }
-            this.indentedSectors = processSectors(this.sectors)
+            this.processSectorsResponse(sectors)
         })
         this.getProfile().then(profile => {
             if (profile) {
@@ -68,28 +41,41 @@ export default class ProfileForm extends Vue {
     @Cacheable('sectors')
     async fetchSectors() {
         try {
-            const {data} = await this.apiService.fetchSectors()
-            return data
+            return await this.apiService.fetchSectors()
         } catch (error) {
-            this.showAlert = true
-            this.alertMessage = 'Failed to load sectors. Please try again.'
-            this.alertType = AlertType.ERROR
+            this.handleApiError('Failed to load sectors. Please try again.', error)
+            return []
         }
     }
 
     @Cacheable('profile')
     async getProfile() {
         try {
-            const {data} = await this.apiService.getProfile()
-            return data
-        } catch (error: unknown) {
-            if (!(axios.isAxiosError(error) && error.response && error.response.status === 403)) {
-                this.showAlert = true
-                this.alertMessage = 'Failed to load profile. Please try again.'
-                this.alertType = AlertType.ERROR
-            }
-            return Promise.reject(error)
+            return await this.apiService.getProfile()
+        } catch (error) {
+            this.handleApiError('Failed to load profile. Please try again.', error)
+            return null
         }
+    }
+
+    processSectorsResponse(sectors: Sector[]) {
+        this.sectors = sectors
+        this.sectors.forEach(sector => this.sectorMap.set(sector.id, sector))
+        this.indentedSectors = this.indentSectors(this.sectors)
+    }
+
+    indentSectors(sectors: Sector[], level = 0): Sector[] {
+        let result: Sector[] = []
+        sectors.forEach(sector => {
+            result.push({
+                ...sector,
+                name: '\u00A0'.repeat(level * 3) + sector.name,
+            })
+            if (sector.children && sector.children.length > 0) {
+                result = result.concat(this.indentSectors(sector.children, level + 1))
+            }
+        })
+        return result
     }
 
     toggleSector(event: Event) {
@@ -111,34 +97,39 @@ export default class ProfileForm extends Vue {
         if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
             return
         }
-        await this.apiService.submitProfile(this.profile).then(response => {
+        try {
+            const response = await this.apiService.submitProfile(this.profile)
             this.alertType = AlertType.SUCCESS
             this.alertMessage = response.status == 201 ? 'Profile saved successfully' : 'Profile updated'
             this.showAlert = true
-        }).catch(error => {
-            if (axios.isAxiosError(error) && error.response) {
-                const apiError = new ApiError(
-                    error.response.status,
-                    error.response.data.message,
-                    error.response.data.debugMessage,
-                    error.response.data.validationErrors || {}
-                )
-                this.alertMessage = `${apiError.message}. ${apiError.debugMessage}`
-                if (Object.keys(apiError.validationErrors).length > 0) {
-                    this.alertMessage += ': ' + Object.entries(apiError.validationErrors)
-                        .map(([, message]) => `${message}`).join(', ')
-                }
-            } else {
-                this.alertMessage = 'An unexpected error occurred. Please try again.'
-            }
-            this.alertType = AlertType.ERROR
-            this.showAlert = true
-        }).finally(() => {
+        } catch (error) {
+            this.handleApiError('An unexpected error occurred. Please try again.', error)
+        } finally {
             setTimeout(() => {
                 this.showAlert = false
                 this.alertType = null
             }, 5000)
             this.cacheService.setItem<Profile>('profile', this.profile)
-        })
+        }
+    }
+
+    handleApiError(defaultMessage: string, error: any) {
+        this.showAlert = true
+        if (error.response) {
+            const apiError = new ApiError(
+                error.response.status,
+                error.response.data.message,
+                error.response.data.debugMessage,
+                error.response.data.validationErrors || {}
+            )
+            this.alertMessage = `${apiError.message}. ${apiError.debugMessage}`
+            if (Object.keys(apiError.validationErrors).length > 0) {
+                this.alertMessage += ': ' + Object.entries(apiError.validationErrors)
+                    .map(([, message]) => message).join(', ')
+            }
+        } else {
+            this.alertMessage = defaultMessage
+        }
+        this.alertType = AlertType.ERROR
     }
 }
