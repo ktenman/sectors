@@ -1,12 +1,15 @@
 # Build stage
-FROM maven:3.9-eclipse-temurin-21-alpine AS build
+FROM gradle:jdk21 AS build
 
 WORKDIR /app
 
-COPY pom.xml .
+# Copy Gradle files
+COPY build.gradle.kts settings.gradle.kts /app/
+COPY gradle /app/gradle
 COPY src /app/src
 
-RUN mvn --quiet package -DskipTests
+# Build the application
+RUN gradle clean build -x test --no-daemon
 
 # Final stage
 FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
@@ -14,7 +17,7 @@ FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
 WORKDIR /app
 
 # Copy the application JAR
-COPY --from=build /app/target/*.jar /app/app.jar
+COPY --from=build /app/build/libs/*.jar /app/app.jar
 
 # Set JAVA_OPTS for application-specific options
 ENV JAVA_OPTS="-Xms512m -Duser.timezone=Europe/Tallinn"

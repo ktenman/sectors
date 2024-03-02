@@ -6,14 +6,14 @@ on:
 
 jobs:
   test:
-    name: 🧪 Test with Maven
+    name: 🧪 Test with Gradle
     runs-on: ubuntu-latest
-    container: maven:3.9-eclipse-temurin-21-alpine
+    container: gradle:latest
     steps:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
-      - run: mvn --quiet test
+      - run: ./gradlew --quiet test
 
   build-docker:
     name: 🔨 Build with Docker Compose
