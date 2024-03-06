@@ -49,13 +49,23 @@ tasks.withType<Test> {
     useJUnitPlatform()
 
     if (System.getenv("E2E")?.toBoolean() == true) {
-        include("**/e2e/**")
-        systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
-        systemProperties["webdriver.chrome.verboseLogging"] = "true"
-        if (project.hasProperty("headless")) {
-            systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
-        }
+        configureE2EtestEnvironment()
     } else {
         exclude("**/e2e/**")
+    }
+}
+
+tasks.register<Test>("e2eTest") {
+    group = "E2E tests"
+    description = "Run end-to-end tests"
+    configureE2EtestEnvironment()
+}
+
+fun Test.configureE2EtestEnvironment() {
+    include("**/e2e/**")
+    systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
+    systemProperties["webdriver.chrome.verboseLogging"] = "true"
+    if (project.hasProperty("headless")) {
+        systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
     }
 }
