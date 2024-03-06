@@ -56,6 +56,6 @@ tasks.withType<Test> {
             systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
         }
     } else {
-		exclude("**/e2e/**")
-	}
+        exclude("**/e2e/**")
+    }
 }

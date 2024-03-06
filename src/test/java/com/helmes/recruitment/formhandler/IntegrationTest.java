@@ -41,7 +41,7 @@ class Initializer implements ApplicationContextInitializer<ConfigurableApplicati
 		TestPropertyValues.of(
 				"spring.data.redis.host=" + REDIS_CONTAINER.getHost(),
 				"spring.data.redis.port=" + REDIS_CONTAINER.getFirstMappedPort(),
-
+				
 				"spring.datasource.url=" + POSTGRES_DB_CONTAINER.getJdbcUrl(),
 				"spring.datasource.username=" + POSTGRES_DB_CONTAINER.getUsername(),
 				"spring.datasource.password=" + POSTGRES_DB_CONTAINER.getPassword()

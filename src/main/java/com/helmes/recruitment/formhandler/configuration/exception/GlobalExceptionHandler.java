@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
- 
+	
 	@ExceptionHandler({WebExchangeBindException.class, MethodArgumentNotValidException.class})
 	public ResponseEntity<ApiError> handleValidationExceptions(Exception exception) {
 		return handleValidationException(exception);
@@ -47,19 +47,19 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<>(apiError, apiError.getStatus());
 	}
-    
-    private ResponseEntity<ApiError> handleValidationException(Exception exception) {
-        Map<String, String> errors = extractErrors(exception);
-        
-        ApiError apiError = ApiError.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .message("Validation error")
-                .debugMessage("One or more fields have an error")
-                .validationErrors(errors)
-                .build();
-        
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-    }
+	
+	private ResponseEntity<ApiError> handleValidationException(Exception exception) {
+		Map<String, String> errors = extractErrors(exception);
+		
+		ApiError apiError = ApiError.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message("Validation error")
+				.debugMessage("One or more fields have an error")
+				.validationErrors(errors)
+				.build();
+		
+		return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+	}
 	
 	private Map<String, String> extractErrors(Exception exception) {
 		BindingResult bindingResult = null;

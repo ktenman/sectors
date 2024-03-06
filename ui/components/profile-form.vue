@@ -14,7 +14,8 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
-            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple @change="toggleSector($event)">
+            <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple
+                    @change="toggleSector($event)">
               <option v-for="sector in sectors" :key="sector.id" :value="sector.id">
                 {{ sector.name }}
               </option>
@@ -32,7 +33,8 @@
             <button class="btn btn-primary" type="submit" id="submitFormButton">Submit</button>
           </div>
           <div class="mb-3">
-            <div v-if="showAlert" id="formAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
+            <div v-if="showAlert" id="formAlert"
+                 :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
               {{ alertMessage }}
             </div>
           </div>

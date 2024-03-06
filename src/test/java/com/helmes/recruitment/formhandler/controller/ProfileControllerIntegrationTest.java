@@ -132,7 +132,7 @@ class ProfileControllerIntegrationTest {
 					assertThat(p.getUpdatedAt()).isNotNull().isBefore(now);
 				});
 	}
-
+	
 	@Test
 	void saveProfile_withInvalidProfileData_returnsMultipleValidationErrors() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/api/profiles")

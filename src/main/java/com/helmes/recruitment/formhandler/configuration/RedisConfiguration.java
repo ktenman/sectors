@@ -14,18 +14,18 @@ import java.util.Map;
 @Configuration
 @EnableCaching
 public class RedisConfiguration {
-    
-    public static final String ONE_DAY_CACHE = "one-day-cache";
-    private static final Duration DEFAULT_TTL = Duration.ofMinutes(30);
-
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put(ONE_DAY_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1)));
-        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig().entryTtl(DEFAULT_TTL);
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(defaultConfig)
-                .withInitialCacheConfigurations(cacheConfigurations)
-                .build();
-    }
+	
+	public static final String ONE_DAY_CACHE = "one-day-cache";
+	private static final Duration DEFAULT_TTL = Duration.ofMinutes(30);
+	
+	@Bean
+	public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+		Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+		cacheConfigurations.put(ONE_DAY_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1)));
+		RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig().entryTtl(DEFAULT_TTL);
+		return RedisCacheManager.builder(connectionFactory)
+				.cacheDefaults(defaultConfig)
+				.withInitialCacheConfigurations(cacheConfigurations)
+				.build();
+	}
 }

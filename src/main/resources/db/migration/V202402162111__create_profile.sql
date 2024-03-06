@@ -5,9 +5,9 @@ CREATE TABLE profile
     id             BIGSERIAL PRIMARY KEY,
     name           VARCHAR(255) NOT NULL,
     agree_to_terms BOOLEAN      NOT NULL,
-    session_id UUID        NOT NULL UNIQUE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    session_id     UUID         NOT NULL UNIQUE,
+    created_at     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE profile_sector

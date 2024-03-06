@@ -1,15 +1,15 @@
-import axios, { AxiosError } from 'axios'
-import { Profile } from '../models/profile'
-import { ApiError } from '../models/api-error'
+import axios, {AxiosError} from 'axios'
+import {Profile} from '../models/profile'
+import {ApiError} from '../models/api-error'
 
 export class ApiService {
     async fetchSectors() {
-        const { data } = await axios.get('/api/sectors').catch(this.handleError)
+        const {data} = await axios.get('/api/sectors').catch(this.handleError)
         return data
     }
 
     async getProfile() {
-        const { data } = await axios.get('/api/profiles').catch(this.handleError)
+        const {data} = await axios.get('/api/profiles').catch(this.handleError)
         return data
     }
 

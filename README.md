@@ -1,6 +1,7 @@
 # Form Handler Application
 
 [![Build & Test](https://github.com/ktenman/sectors/actions/workflows/ci.yml/badge.svg)](https://github.com/ktenman/sectors/actions/workflows/ci.yml)
+
 ## Introduction
 
 This Form Handler application is designed to streamline the process of submitting information through a dynamic form,
@@ -23,7 +24,8 @@ Before you begin, ensure your system meets the following requirements:
 
 - **Backend**: Spring Boot v3.2
 - **Frontend**:
-    - **Build Tool**: Vite is used as the build tool for the frontend, leveraging its fast build times and efficient module replacement to enhance the development experience.
+    - **Build Tool**: Vite is used as the build tool for the frontend, leveraging its fast build times and efficient
+      module replacement to enhance the development experience.
     - Vue.js v3.2
     - Bootstrap v5.3
 - **Database**: PostgreSQL for data persistence and Flyway for database migration management.
@@ -69,8 +71,10 @@ overview of each table and their relationships:
 
 The application provides comprehensive API documentation using OpenAPI 3.0. You can access this documentation at:
 
-- When running the application with Docker Compose: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- When running the application directly through IntelliJ: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+- When running the application with Docker
+  Compose: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- When running the application directly through
+  IntelliJ: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 
 ## Setup and Running Instructions
 

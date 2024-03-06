@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test-type: ['unit', 'e2e']
+        test-type: [ 'unit', 'e2e' ]
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -82,7 +82,7 @@ jobs:
 
   auto-merge-dependabot:
     name: 🤖 Auto merge dependabot PR
-    needs: [test, build-docker]
+    needs: [ test, build-docker ]
     if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
