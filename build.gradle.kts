@@ -49,19 +49,12 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	if (System.getenv("CI")?.toBoolean() == true) {
 		exclude("**/e2e/**")
+	} else {
+		systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
+		systemProperties["webdriver.chrome.verboseLogging"] = "true"
+		if (project.hasProperty("headless")) {
+			systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
+		}
 	}
 }
 
-val e2eTest by tasks.registering(Test::class) {
-	group = "End-to-End Testing"
-	description = "Runs the end-to-end tests located in the e2e directory."
-
-	useJUnitPlatform()
-	include("**/e2e/**")
-
-	systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
-	systemProperties["webdriver.chrome.verboseLogging"] = "true"
-	if (project.hasProperty("headless")) {
-		systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
-	}
-}
