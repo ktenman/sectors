@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: 🧪 Unit and E2E Tests with Gradle
+    name: 🧪 Test with Gradle
     runs-on: ubuntu-latest
     strategy:
       matrix:
