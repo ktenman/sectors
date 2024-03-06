@@ -11,12 +11,15 @@ export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
     sectors: Sector[] = []
     sectorMap: Map<number, Sector> = new Map()
-    showAlert: boolean = false
     alertMessage: string = ''
-    alertType: AlertType | null = null
+    alertType: AlertType = AlertType.SUCCESS
     formSubmitted: boolean = false
     apiService: ApiService = new ApiService()
     cacheService: CacheService = new CacheService()
+
+    get AlertType(): typeof AlertType {
+        return AlertType
+    }
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
@@ -71,7 +74,7 @@ export default class ProfileForm extends Vue {
         }
         try {
             const response = await this.apiService.submitProfile(this.profile)
-            this.showSuccessAlert(response.status === 201 ? 'Profile saved successfully' : 'Profile updated')
+            this.displayAlert(response.status === 201 ? 'Profile saved successfully' : 'Profile updated', AlertType.SUCCESS)
             this.cacheService.setItem<Profile>('profile', this.profile)
         } catch (error) {
             this.handleApiError('An unexpected error occurred. Please try again.', error)
@@ -91,17 +94,15 @@ export default class ProfileForm extends Vue {
     }
 
     private handleApiError(defaultMessage: string, error: any) {
-        this.showAlert = true
         if (error instanceof ApiError) {
             if (error.status === 403) {
-                this.showAlert = false
                 return
             }
             const message = `${error.message}. ${error.debugMessage}: ${Object.entries(error.validationErrors)
                 .map(([, message]) => message).join(', ')}`
-            this.showErrorAlert(message)
+            this.displayAlert(message, AlertType.ERROR)
         } else {
-            this.showErrorAlert(defaultMessage)
+            this.displayAlert(defaultMessage, AlertType.ERROR)
         }
     }
 
@@ -119,22 +120,15 @@ export default class ProfileForm extends Vue {
         return result
     }
 
-    private showSuccessAlert(message: string) {
-        this.alertType = AlertType.SUCCESS
+    private displayAlert(message: string, type: AlertType) {
         this.alertMessage = message
-        this.showAlert = true
-    }
-
-    private showErrorAlert(message: string) {
-        this.alertType = AlertType.ERROR
-        this.alertMessage = message
-        this.showAlert = true
+        this.alertType = type
     }
 
     private resetAlert() {
         setTimeout(() => {
-            this.showAlert = false
-            this.alertType = null
+            this.alertType = AlertType.SUCCESS
+            this.alertMessage = ''
         }, 4000)
     }
 
