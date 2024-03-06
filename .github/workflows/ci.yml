@@ -28,7 +28,7 @@ jobs:
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:
-          arguments: test --info ${{ matrix.test-type == 'e2e' && '-Pheadless=true' || '' }}
+          arguments: ${{ matrix.test-type == 'e2e' && 'e2eTest -Pheadless=true' || 'test' }} --info
       - name: Publish Test Results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2.15.1

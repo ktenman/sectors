@@ -59,3 +59,16 @@ tasks.withType<Test> {
         exclude("**/e2e/**")
     }
 }
+
+tasks.register<Test>("e2eTest") {
+    group = "E2E Tests"
+    description = "Runs the end-to-end tests with the e2e profile."
+    useJUnitPlatform()
+
+    include("**/e2e/**")
+    systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
+    systemProperties["webdriver.chrome.verboseLogging"] = "true"
+    if (project.hasProperty("headless")) {
+        systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
+    }
+}
