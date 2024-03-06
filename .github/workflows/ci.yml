@@ -49,7 +49,7 @@ jobs:
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:
-          arguments: test --info -Pheadless=true
+          arguments: test --info -Pheadless=true -Pe2eTest
 
   build-docker:
     name: 🔨 Build with Docker Compose
