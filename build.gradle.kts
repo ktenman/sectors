@@ -47,16 +47,5 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    if (System.getenv("CI")?.toBoolean() == true) {
-        exclude("**/e2e/**")
-    } else if (project.hasProperty("e2eTest")) {
-        include("**/e2e/**")
-        systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
-        systemProperties["webdriver.chrome.verboseLogging"] = "true"
-        if (project.hasProperty("headless")) {
-            systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
-        }
-
-    }
 }
 
