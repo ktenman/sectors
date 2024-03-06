@@ -32,9 +32,22 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Set up Docker Buildx (for E2E tests)
+        if: matrix.test-type == 'e2e'
+        uses: docker/setup-buildx-action@v3.1.0
+
+      - name: Cache Docker layers (for E2E tests)
+        if: matrix.test-type == 'e2e'
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-e2e-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-e2e-
+
       - name: Build with Docker Compose (for E2E tests)
         if: matrix.test-type == 'e2e'
-        run: docker-compose -f docker-compose.e2e.yml up -d
+        run: docker-compose -f docker-compose.e2e.yml up --build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from type=local,src=/tmp/.buildx-cache -d
 
       - name: Set CI environment variable
         run: echo "E2E=${{ matrix.test-type == 'e2e' }}" >> $GITHUB_ENV
