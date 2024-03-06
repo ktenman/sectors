@@ -46,7 +46,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.1.0
       - name: Build with Docker Compose
         run: docker-compose -f docker-compose.e2e.yml up -d && sleep 5 && docker-compose logs
-      - name: Run Gradle test
+      - name: Run E2E tests
         uses: eskatos/gradle-command-action@v3.1.0
         with:
           arguments: --info -Pheadless=true e2eTest
