@@ -53,8 +53,8 @@ tasks.withType<Test> {
 }
 
 val e2eTest by tasks.registering(Test::class) {
-	description = "Runs end-to-end tests."
-	group = "verification"
+	group = "End-to-End Testing"
+	description = "Runs the end-to-end tests located in the e2e directory."
 
 	useJUnitPlatform {
 		include("**/e2e/**")
