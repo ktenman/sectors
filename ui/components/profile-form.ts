@@ -1,7 +1,7 @@
 import {Vue} from 'vue-class-component'
 import {Profile} from '../models/profile'
 import {Sector} from '../models/sector'
-import {AlertType} from '../models/alert-type'
+import {AlertType, getAlertBootstrapClass} from '../models/alert-type'
 import {ApiService} from '../services/api-service'
 import {CacheService} from '../services/cache-service'
 import {Cacheable} from '../decorators/cacheable.decorator'
@@ -34,6 +34,10 @@ export default class ProfileForm extends Vue {
         this.sectorMap = this.createSectorMap(this.sectors)
         this.sectors = this.indentSectors(this.sectors)
         this.profile = await this.getProfile() ?? this.profile
+    }
+
+    alertClass(): string {
+        return getAlertBootstrapClass(this.alertType)
     }
 
     @Cacheable('profile')
@@ -115,7 +119,7 @@ export default class ProfileForm extends Vue {
     }
 
     private indentSectors(sectors: Sector[], level = 0): Sector[] {
-        const INDENT_SPACES: number = 3;
+        const INDENT_SPACES: number = 3
         let result: Sector[] = []
         sectors.forEach(sector => {
             result.push({
