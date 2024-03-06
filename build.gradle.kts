@@ -57,7 +57,7 @@ tasks.register<Test>("e2eTest") {
 	description = "Runs the end-to-end tests located in the e2e directory."
 
 	useJUnitPlatform()
-	include("e2e/**")
+	include("**/e2e/**")
 
 	systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
 	systemProperties["webdriver.chrome.verboseLogging"] = "true"
