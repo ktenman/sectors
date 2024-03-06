@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class CreateProfileRequest {
 	private List<Long> sectors;
 	
 	@AssertTrue(message = "Agreement to terms must be true")
+	@NotNull(message = "Agreement to terms is mandatory")
 	@Schema(description = "Whether the user agrees to the terms", example = "true")
 	private Boolean agreeToTerms;
 	
