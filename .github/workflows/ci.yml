@@ -35,18 +35,15 @@ jobs:
   e2e-tests:
     name: 🧪 E2E Tests with Gradle
     runs-on: ubuntu-latest
-    container: gradle:jdk21
     steps:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
-      - name: Install Docker and Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo apt-get install -y docker-compose
-      - name: Build with Docker Compose
-        run: docker-compose -f docker-compose.e2e.yml up -d && sleep 5 && docker-compose logs
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.1.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
       - name: List E2E test directory
         run: ls -l src/test/java/e2e/
       - name: E2E Tests
