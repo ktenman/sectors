@@ -11,10 +11,10 @@ export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
     sectors: Sector[] = []
     sectorMap: Map<number, Sector> = new Map()
-    showAlert = false
-    alertMessage = ''
+    showAlert: boolean = false
+    alertMessage: string = ''
     alertType: AlertType | null = null
-    formSubmitted = false
+    formSubmitted: boolean = false
     apiService: ApiService = new ApiService()
     cacheService: CacheService = new CacheService()
 
