@@ -1,0 +1,36 @@
+# Stage 1: Build the frontend
+FROM node:21-slim as frontend-build
+
+# Copy frontend source code
+WORKDIR /app
+COPY ui/ ui/
+COPY tsconfig.json tsconfig.node.json vite.config.ts vite-env.d.ts package.json package-lock.json ./
+
+# Install dependencies and build frontend
+RUN npm ci
+RUN npm run build
+
+# Stage 2: Build the backend
+FROM gradle:jdk21 as backend-build
+
+# Copy backend source code
+WORKDIR /app
+COPY . .
+
+# Build the backend
+RUN ./gradlew clean build -x test
+
+# Stage 3: Create the final image
+FROM markhobson/maven-chrome:jdk-21
+
+# Copy built frontend assets
+WORKDIR /app
+COPY --from=frontend-build /app/dist/ public/
+
+# Copy built backend JAR
+COPY --from=backend-build /app/build/libs/*.jar /app/app.jar
+
+# Set the environment variable using the ARG value
+ENV SERVER_PORT=61234
+
+CMD ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$SERVER_PORT -jar /app/app.jar"]
