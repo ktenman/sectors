@@ -46,10 +46,8 @@ jobs:
         uses: docker/setup-buildx-action@v3.1.0
       - name: Build with Docker Compose
         run: docker-compose -f docker-compose.e2e.yml up -d && sleep 5 && docker-compose logs
-      - name: Run E2E tests
-        uses: eskatos/gradle-command-action@v3.1.0
-        with:
-          arguments: --info -Pheadless=true e2eTest
+      - name: Run E2E Tests
+        run: ./gradlew --info -Pheadless=true e2eTest
       - name: Publish Unit Test Results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2.15.1
