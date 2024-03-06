@@ -17,10 +17,6 @@ export default class ProfileForm extends Vue {
     apiService: ApiService = new ApiService()
     cacheService: CacheService = new CacheService()
 
-    get AlertType(): typeof AlertType {
-        return AlertType
-    }
-
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
     }
