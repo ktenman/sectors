@@ -7,6 +7,7 @@ plugins {
 group = "com.helmes"
 version = "0.0.1-SNAPSHOT"
 val springdocOpenApiVersion = "2.3.0"
+val selenideVersion = "7.1.0"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_21
@@ -41,8 +42,12 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
+	testImplementation("com.codeborne:selenide:$selenideVersion")
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	if (System.getenv("CI")?.toBoolean() == true) {
+		exclude("**/e2e/**")
+	}
 }

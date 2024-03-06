@@ -15,6 +15,8 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: Set CI environment variable
+        run: echo "CI=true" >> $GITHUB_ENV
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:

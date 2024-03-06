@@ -14,9 +14,13 @@ export class ApiService {
     }
 
     async submitProfile(profile: Profile) {
-        const { data } = await axios.post('/api/profiles', profile).catch(this.handleError)
-        return data
+        const response = await axios.post('/api/profiles', profile).catch(this.handleError)
+        return {
+            data: response.data,
+            status: response.status
+        }
     }
+
 
     private handleError(error: AxiosError<ApiError>): never {
         if (axios.isAxiosError(error) && error.response) {

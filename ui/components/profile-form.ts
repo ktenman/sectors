@@ -99,7 +99,7 @@ export default class ProfileForm extends Vue {
         try {
             const response = await this.apiService.submitProfile(this.profile)
             this.alertType = AlertType.SUCCESS
-            this.alertMessage = response.status == 201 ? 'Profile saved successfully' : 'Profile updated'
+            this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
             this.showAlert = true
         } catch (error) {
             this.handleApiError('An unexpected error occurred. Please try again.', error)

@@ -29,10 +29,10 @@
             <div v-if="formSubmitted && !profile.agreeToTerms" class="text-danger">You must agree to the terms.</div>
           </div>
           <div class="mb-3">
-            <button class="btn btn-primary" type="submit">Submit</button>
+            <button class="btn btn-primary" type="submit" id="submitFormButton">Submit</button>
           </div>
           <div class="mb-3">
-            <div v-if="showAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
+            <div v-if="showAlert" id="formAlert" :class="['alert', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
               {{ alertMessage }}
             </div>
           </div>
