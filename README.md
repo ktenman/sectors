@@ -1,6 +1,7 @@
 # Form Handler Application
 
 [![Build & Test](https://github.com/ktenman/sectors/actions/workflows/ci.yml/badge.svg)](https://github.com/ktenman/sectors/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/badge/CodeQL-Analyzed-blue)](https://github.com/ktenman/sectors/security/code-scanning)
 
 ## Introduction
 
