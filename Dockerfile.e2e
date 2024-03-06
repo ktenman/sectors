@@ -21,7 +21,7 @@ COPY . .
 RUN ./gradlew clean build -x test
 
 # Stage 3: Create the final image
-FROM markhobson/maven-chrome:jdk-21
+FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
 
 # Copy built frontend assets
 WORKDIR /app
