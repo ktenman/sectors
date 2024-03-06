@@ -1,36 +1,35 @@
-# Stage 1: Build the frontend
+# --- Build stage ---
+# This stage builds the frontend and backend
+# It uses a multi-stage build to avoid having to install node and npm in the final image
+# It also uses a multi-stage build to avoid having to install gradle in the final image
+# The final image is based on a slim version of the Liberica JDK
+
+# --- Frontend build stage ---
 FROM node:21-slim as frontend-build
 
-# Copy frontend source code
 WORKDIR /app
 COPY ui/ ui/
 COPY tsconfig.json tsconfig.node.json vite.config.ts vite-env.d.ts package.json package-lock.json ./
 
-# Install dependencies and build frontend
 RUN npm ci
 RUN npm run build
 
-# Stage 2: Build the backend
+# --- Backend build stage ---
 FROM gradle:jdk21 as backend-build
 
-# Copy backend source code
 WORKDIR /app
 COPY . .
 
-# Build the backend
 RUN ./gradlew clean build -x test
 
-# Stage 3: Create the final image
+# --- Final image ---
 FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
 
-# Copy built frontend assets
 WORKDIR /app
-COPY --from=frontend-build /app/dist/ public/
 
-# Copy built backend JAR
+COPY --from=frontend-build /app/dist/ public/
 COPY --from=backend-build /app/build/libs/*.jar /app/app.jar
 
-# Set the environment variable using the ARG value
 ENV SERVER_PORT=61234
 
 CMD ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$SERVER_PORT -jar /app/app.jar"]
