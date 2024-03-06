@@ -22,14 +22,10 @@ export default class ProfileForm extends Vue {
         return !!this.profile.name.trim() && this.profile.name.length <= 30
     }
 
-    created() {
-        this.fetchSectors().then(sectors => {
-            this.sectorMap = this.createSectorMap(sectors)
-            this.sectors = this.indentSectors(sectors)
-        })
-        this.getProfile()?.then(profile => {
-            this.profile = profile ?? this.profile
-        })
+    async created() {
+        this.sectors = await this.fetchSectors()
+        this.sectorMap = this.createSectorMap(this.sectors)
+        this.profile = await this.getProfile() ?? this.profile
     }
 
     @Cacheable('sectors')
