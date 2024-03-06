@@ -47,6 +47,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
     if (System.getenv("E2E")?.toBoolean() == true) {
         include("**/e2e/**")
         systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
@@ -58,4 +59,3 @@ tasks.withType<Test> {
 		exclude("**/e2e/**")
 	}
 }
-

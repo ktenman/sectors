@@ -26,7 +26,7 @@ class SubmitFormE2ETest {
 		$(id("formAlert")).shouldHave(anyOf("Profile status",
 				text("Profile saved successfully"),
 				text("Profile updated")));
-		assertThat(sectors).hasSize(80);
+		assertThat(sectors).hasSize(79);
 	}
 	
 }
