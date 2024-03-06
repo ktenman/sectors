@@ -23,8 +23,6 @@ jobs:
       - name: Start services with Docker Compose (for E2E tests)
         if: matrix.test-type == 'e2e'
         run: docker-compose -f docker-compose.e2e.yml up -d
-      - name: Set CI environment variable
-        run: echo "E2E=${{ matrix.test-type == 'e2e' }}" >> $GITHUB_ENV
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:

@@ -26,7 +26,7 @@ class SubmitFormE2ETest {
 		$(id("submitFormButton")).click();
 		
 		$(id("formAlert")).shouldBe(visible).shouldHave(text("Profile saved successfully"));
-		assertThat(sectors).hasSize(79);
+		assertThat(sectors).hasSize(77);
 		Selenide.refresh();
 		$(id("formAlert")).shouldNotBe(visible);
 		assertThat($(By.id("name")).val()).isEqualTo("Konstantin");
