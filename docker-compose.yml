@@ -44,7 +44,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
 
-  nginx:
+  app:
     image: nginx:alpine
     ports:
       - '80:80'
