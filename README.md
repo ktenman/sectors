@@ -84,7 +84,7 @@ Initialize necessary Docker containers with Docker Compose tools to ensure the d
 proceeding:
 
 ```bash
-docker-compose up -d
+docker-compose -f compose.yml up -d
 ```
 
 This step is crucial, especially before moving to production build, to ensure all dependent services are available.
@@ -157,6 +157,34 @@ docker-compose -f docker-compose.yml build
 ```bash
 docker-compose -f docker-compose.yml up -d
 ```
+
+# End-to-End Tests on Unix System
+
+To run end-to-end (E2E) tests on a Unix-based system, follow these steps:
+
+1. **Prepare the Environment**: Ensure all necessary configuration files are correctly set up for running E2E tests.
+
+2. **Start Docker Containers**: Initialize the required Docker containers with Docker Compose to ensure the database and Redis services are up and running. Use the following command:
+
+    ```bash
+    docker-compose -f docker-compose.e2e.yml up -d
+    ```
+
+3. **Set Environment Variable**: Export the `E2E` environment variable to `true`. This step is essential for configuring the application to run in E2E test mode. Use the following command:
+
+    ```bash
+    export E2E=true
+    ```
+
+4. **Run E2E Tests**: Execute the Gradle command to run the E2E tests. Ensure to provide the `headless=true` flag to run the tests in headless mode, suitable for automated testing. Use the following command:
+
+    ```bash
+    ./gradlew --info -Pheadless=true
+    ```
+
+5. **Verify Test Results**: After the tests have completed, review the test results for any failures or errors. You can access detailed logs to identify and troubleshoot any issues encountered during the E2E testing process.
+
+By following these steps, you can effectively run end-to-end tests for the Form Handler application on your Unix-based system.
 
 ## Continuous Integration and Deployment
 
