@@ -71,17 +71,12 @@ export default class ProfileForm extends Vue {
         }
         try {
             const response = await this.apiService.submitProfile(this.profile)
-            this.alertType = AlertType.SUCCESS
-            this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
-            this.showAlert = true
+            this.showSuccessAlert(response.status === 201 ? 'Profile saved successfully' : 'Profile updated')
+            this.cacheService.setItem<Profile>('profile', this.profile)
         } catch (error) {
             this.handleApiError('An unexpected error occurred. Please try again.', error)
         } finally {
-            setTimeout(() => {
-                this.showAlert = false
-                this.alertType = null
-            }, 4_000)
-            this.cacheService.setItem<Profile>('profile', this.profile)
+            this.resetAlert()
         }
     }
 
@@ -102,12 +97,11 @@ export default class ProfileForm extends Vue {
                 this.showAlert = false
                 return
             }
-            this.alertMessage = `${error.message}. ${error.debugMessage}: ${Object.entries(error.validationErrors)
+            const message = `${error.message}. ${error.debugMessage}: ${Object.entries(error.validationErrors)
                 .map(([, message]) => message).join(', ')}`
-            this.alertType = AlertType.ERROR
+            this.showErrorAlert(message)
         } else {
-            this.alertMessage = defaultMessage
-            this.alertType = AlertType.ERROR
+            this.showErrorAlert(defaultMessage)
         }
     }
 
@@ -123,6 +117,25 @@ export default class ProfileForm extends Vue {
             }
         })
         return result
+    }
+
+    private showSuccessAlert(message: string) {
+        this.alertType = AlertType.SUCCESS
+        this.alertMessage = message
+        this.showAlert = true
+    }
+
+    private showErrorAlert(message: string) {
+        this.alertType = AlertType.ERROR
+        this.alertMessage = message
+        this.showAlert = true
+    }
+
+    private resetAlert() {
+        setTimeout(() => {
+            this.showAlert = false
+            this.alertType = null
+        }, 4000)
     }
 
 }
