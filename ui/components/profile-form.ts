@@ -18,6 +18,14 @@ export default class ProfileForm extends Vue {
     apiService: ApiService = new ApiService()
     cacheService: CacheService = new CacheService()
 
+    get atLeastOneSectorSelected() {
+        return this.profile.sectors.length > 0
+    }
+
+    private get isNameValid() {
+        return !!this.profile.name.trim() && this.profile.name.length <= 30
+    }
+
     async created() {
         this.sectors = await this.fetchSectors()
         this.sectorMap = this.createSectorMap(this.sectors)
@@ -25,8 +33,13 @@ export default class ProfileForm extends Vue {
         this.profile = await this.getProfile() ?? this.profile
     }
 
-    private get isNameValid() {
-        return !!this.profile.name.trim() && this.profile.name.length <= 30
+    @Cacheable('profile')
+    async getProfile() {
+        try {
+            return await this.apiService.getProfile()
+        } catch (error) {
+            this.handleApiError('Failed to load profile. Please try again.', error)
+        }
     }
 
     @Cacheable('sectors')
@@ -37,10 +50,6 @@ export default class ProfileForm extends Vue {
             this.handleApiError('Failed to load sectors. Please try again.', error)
             return []
         }
-    }
-
-    get atLeastOneSectorSelected() {
-        return this.profile.sectors.length > 0
     }
 
     toggleSector(event: Event) {
@@ -114,15 +123,6 @@ export default class ProfileForm extends Vue {
             }
         })
         return result
-    }
-
-    @Cacheable('profile')
-    async getProfile() {
-        try {
-            return await this.apiService.getProfile()
-        } catch (error) {
-            this.handleApiError('Failed to load profile. Please try again.', error)
-        }
     }
 
 }
