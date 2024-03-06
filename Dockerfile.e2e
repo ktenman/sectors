@@ -1,10 +1,3 @@
-# --- Build stage ---
-# This stage builds the frontend and backend
-# It uses a multi-stage build to avoid having to install node and npm in the final image
-# It also uses a multi-stage build to avoid having to install gradle in the final image
-# The final image is based on a slim version of the Liberica JDK
-
-# --- Frontend build stage ---
 FROM node:21-slim as frontend-build
 
 WORKDIR /app
@@ -14,7 +7,6 @@ COPY tsconfig.json tsconfig.node.json vite.config.ts vite-env.d.ts package.json 
 RUN npm ci
 RUN npm run build
 
-# --- Backend build stage ---
 FROM gradle:jdk21 as backend-build
 
 WORKDIR /app
@@ -22,8 +14,7 @@ COPY . .
 
 RUN ./gradlew clean build -x test
 
-# --- Final image ---
-FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
+FROM backend-build as final
 
 WORKDIR /app
 
