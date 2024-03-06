@@ -1,5 +1,5 @@
-import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
+import {defineConfig} from 'vite';
+import vue from '@vitejs/plugin-vue';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +11,6 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:8081',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '/api')
             },
         },
     },
@@ -20,4 +19,4 @@ export default defineConfig({
         outDir: '../dist', // This will output the build artifacts to /app/dist when the root is /app/ui
         sourcemap: true,
     },
-})
+});
