@@ -25,6 +25,7 @@ export default class ProfileForm extends Vue {
     async created() {
         this.sectors = await this.fetchSectors()
         this.sectorMap = this.createSectorMap(this.sectors)
+        this.sectors = this.indentSectors(this.sectors)
         this.profile = await this.getProfile() ?? this.profile
     }
 
