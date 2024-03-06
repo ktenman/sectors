@@ -52,22 +52,12 @@ tasks.withType<Test> {
 	}
 }
 
-sourceSets {
-	val e2eTest by creating {
-		java.srcDir(file("src/test/java/e2e"))
-		resources.srcDir(file("src/test/resources"))
-		compileClasspath = sourceSets.main.get().output + configurations["testRuntimeClasspath"]
-		runtimeClasspath = output + compileClasspath
-	}
-}
-
 val e2eTest by tasks.registering(Test::class) {
 	group = "End-to-End Testing"
 	description = "Runs the end-to-end tests located in the e2e directory."
 
-	useJUnitPlatform {
-		include("**/e2e/**")
-	}
+	useJUnitPlatform()
+	include("**/e2e/**")
 
 	systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
 	systemProperties["webdriver.chrome.verboseLogging"] = "true"

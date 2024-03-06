@@ -15,35 +15,15 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Set CI environment variable
-        run: echo "CI=true" >> $GITHUB_ENV
-      - name: Run Gradle test
-        uses: eskatos/gradle-command-action@v3.1.0
+      - uses: actions/cache@v2
         with:
-          arguments: test --info
-      - name: Publish Unit Test Results
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2.15.1
-        with:
-          files: build/test-results/test/**/*.xml
-      - uses: actions/upload-artifact@v4.3.1
-        if: always()
-        with:
-          name: Test reports
-          path: build/reports/tests
-
-  e2e-tests:
-    name: 🧪 Run E2E tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.1
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4.1.0
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.1.0
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - run: ./gradlew jar
       - name: Build with Docker Compose
         run: docker-compose -f docker-compose.e2e.yml up -d && sleep 5 && docker-compose logs
       - name: List E2E test directory
@@ -52,6 +32,8 @@ jobs:
         run: ./gradlew --info test
       - name: E2E Tests
         run: ./gradlew --info -Pheadless=true e2eTest
+      - name: Stop Docker Compose E2E
+        run: docker-compose -f docker-compose.e2e.yml down
       - name: Publish Unit Test Results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2.15.1
