@@ -6,52 +6,60 @@ on:
 
 jobs:
   test:
-    name: 🧪 Test with Gradle
+    name: 🧪 Unit and E2E Tests with Gradle
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.1
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4.1.0
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - name: Set CI environment variable
-        run: echo "E2E=false" >> $GITHUB_ENV
-      - name: Run Gradle test
-        uses: eskatos/gradle-command-action@v3.1.0
-        with:
-          arguments: test --info
-      - name: Publish Unit Test Results
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2.15.1
-        with:
-          files: build/test-results/test/**/*.xml
-      - uses: actions/upload-artifact@v4.3.1
-        if: always()
-        with:
-          name: Test reports
-          path: build/reports/tests
-
-  e2e-tests:
-    name: 🧪 E2E Tests with Gradle
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-type: ['unit', 'e2e']
     steps:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v3.0.0
+        with:
+          path: |
+            ~/.gradle/wrapper
+            ~/.gradle/caches/modules-2/files-2.1
+            ~/.gradle/caches/build-cache-1
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build with Docker Compose
+        if: matrix.test-type == 'e2e'
         run: docker-compose -f docker-compose.e2e.yml up -d
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4.1.0
         with:
           java-version: '21'
           distribution: 'temurin'
+
       - name: Set CI environment variable
-        run: echo "E2E=true" >> $GITHUB_ENV
+        run: echo "E2E=${{ matrix.test-type == 'e2e' }}" >> $GITHUB_ENV
+
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:
-          arguments: test --info -Pheadless=true -Pe2eTest
+          arguments: test --info ${{ matrix.test-type == 'e2e' && '-Pheadless=true' || '' }}
+
+      - name: Stop Docker Compose
+        if: matrix.test-type == 'e2e'
+        run: docker-compose -f docker-compose.e2e.yml down
+
+      - name: Publish Test Results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2.15.1
+        with:
+          files: build/test-results/test/**/*.xml
+          check_name: ${{ format('Test Results ({0})', matrix.test-type) }}
+
+      - uses: actions/upload-artifact@v4.3.1
+        if: always()
+        with:
+          name: ${{ format('Test reports ({0})', matrix.test-type) }}
+          path: build/reports/tests
 
   build-docker:
     name: 🔨 Build with Docker Compose
@@ -65,7 +73,7 @@ jobs:
 
   auto-merge-dependabot:
     name: 🤖  Auto merge dependabot PR
-    needs: [ test, e2e-tests, build-docker ]
+    needs: [ test, build-docker ]
     if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
