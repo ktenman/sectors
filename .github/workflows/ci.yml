@@ -28,7 +28,7 @@ jobs:
       - name: Run Gradle test
         uses: eskatos/gradle-command-action@v3.1.0
         with:
-          arguments: test --info ${{ matrix.test-type == 'e2e' && '-Pheadless=true' || '' }}
+          arguments: test --info -Dselenide.reportsFolder=build/reports/selenide ${{ matrix.test-type == 'e2e' && '-Pheadless=true' || '' }}
       - name: Publish Test Results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2.15.1
@@ -38,8 +38,10 @@ jobs:
       - uses: actions/upload-artifact@v4.3.1
         if: always()
         with:
-          name: ${{ format('Test reports ({0})', matrix.test-type) }}
-          path: build/reports/tests
+          name: ${{ format('Test reports and screenshots ({0})', matrix.test-type) }}
+          path: |
+            build/reports/tests
+            build/reports/selenide
 
   build-docker:
     name: 🔨 Build with Docker Compose
