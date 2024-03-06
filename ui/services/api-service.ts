@@ -21,7 +21,6 @@ export class ApiService {
         }
     }
 
-
     private handleError(error: AxiosError<ApiError>): never {
         if (axios.isAxiosError(error) && error.response) {
             throw new ApiError(
