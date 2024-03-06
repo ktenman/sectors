@@ -1,28 +1,20 @@
-# Build stage
 FROM gradle:jdk21 AS build
 
 WORKDIR /app
 
-# Copy Gradle files
 COPY build.gradle.kts settings.gradle.kts /app/
 COPY gradle /app/gradle
 COPY src /app/src
 
-# Build the application
 RUN gradle clean build -x test --no-daemon
 
-# Final stage
 FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
 
 WORKDIR /app
 
-# Copy the application JAR
 COPY --from=build /app/build/libs/*.jar /app/app.jar
 
-# Set JAVA_OPTS for application-specific options
 ENV JAVA_OPTS="-Xms512m -Duser.timezone=Europe/Tallinn"
-
-# Use JAVA_TOOL_OPTIONS to control JVM-level settings, including memory usage
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=80"
 
 ENV SERVER_PORT=8080

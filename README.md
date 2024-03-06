@@ -138,7 +138,7 @@ docker ps
 For logs and troubleshooting, use:
 
 ```bash
-docker-compose -f docker-compose.yml logs
+docker-compose -f docker-compose.yml logs -f
 ```
 
 Replace `<service_name>` with the name of the service you want to inspect.
