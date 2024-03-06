@@ -43,7 +43,7 @@ jobs:
         with:
           arguments: test --info ${{ matrix.test-type == 'e2e' && '-Pheadless=true' || '' }}
 
-      - name: Stop Docker Compose
+      - name: Teardown E2E test environment
         if: matrix.test-type == 'e2e'
         run: docker-compose -f docker-compose.e2e.yml down
 
