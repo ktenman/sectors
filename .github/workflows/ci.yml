@@ -15,7 +15,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.0.0
         with:
           path: |
             ~/.gradle/caches
@@ -57,7 +57,7 @@ jobs:
 
   auto-merge-dependabot:
     name: 🤖  Auto merge dependabot PR
-    needs: [ test, e2e-tests, build-docker ]
+    needs: [ test, build-docker ]
     if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
