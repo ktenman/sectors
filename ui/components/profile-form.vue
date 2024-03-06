@@ -33,7 +33,7 @@
             <button class="btn btn-primary" type="submit" id="submitFormButton">Submit</button>
           </div>
           <div class="mb-3">
-            <div v-if="!!alertMessage" id="formAlert"
+            <div v-if="displayAlert()" id="formAlert"
                  :class="['alert', alertType === AlertType.SUCCESS ? 'alert-success' : 'alert-danger']" role="alert">
               {{ alertMessage }}
             </div>

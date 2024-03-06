@@ -12,7 +12,7 @@ export default class ProfileForm extends Vue {
     sectors: Sector[] = []
     sectorMap: Map<number, Sector> = new Map()
     alertMessage: string = ''
-    alertType: AlertType = AlertType.SUCCESS
+    alertType: AlertType | null = null
     formSubmitted: boolean = false
     apiService: ApiService = new ApiService()
     cacheService: CacheService = new CacheService()
@@ -67,19 +67,27 @@ export default class ProfileForm extends Vue {
         sector?.children.forEach(addChildren)
     }
 
+    displayAlert(): boolean {
+        return this.alertType !== null && this.alertMessage !== ''
+    }
+
     async submitForm() {
         this.formSubmitted = true
-        if (!this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms) {
+        if (this.isNotValidInput()) {
             return
         }
         try {
             const response = await this.apiService.submitProfile(this.profile)
-            this.displayAlert(response.status === 201 ? 'Profile saved successfully' : 'Profile updated', AlertType.SUCCESS)
+            this.alertType = AlertType.SUCCESS
+            this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
             this.cacheService.setItem<Profile>('profile', this.profile)
         } catch (error) {
             this.handleApiError('An unexpected error occurred. Please try again.', error)
         } finally {
-            this.resetAlert()
+            setTimeout(() => {
+                this.alertType = null
+                this.alertMessage = ''
+            }, 4000)
         }
     }
 
@@ -94,24 +102,25 @@ export default class ProfileForm extends Vue {
     }
 
     private handleApiError(defaultMessage: string, error: any) {
+        this.alertType = AlertType.ERROR
         if (error instanceof ApiError) {
             if (error.status === 403) {
                 return
             }
-            const message = `${error.message}. ${error.debugMessage}: ${Object.entries(error.validationErrors)
+            this.alertMessage = `${error.message}. ${error.debugMessage}: ${Object.entries(error.validationErrors)
                 .map(([, message]) => message).join(', ')}`
-            this.displayAlert(message, AlertType.ERROR)
         } else {
-            this.displayAlert(defaultMessage, AlertType.ERROR)
+            this.alertMessage = defaultMessage
         }
     }
 
     private indentSectors(sectors: Sector[], level = 0): Sector[] {
+        const INDENT_SPACES: number = 3;
         let result: Sector[] = []
         sectors.forEach(sector => {
             result.push({
                 ...sector,
-                name: '\u00A0'.repeat(level * 3) + sector.name,
+                name: '\u00A0'.repeat(level * INDENT_SPACES) + sector.name,
             })
             if (sector.children && sector.children.length > 0) {
                 result = result.concat(this.indentSectors(sector.children, level + 1))
@@ -120,16 +129,8 @@ export default class ProfileForm extends Vue {
         return result
     }
 
-    private displayAlert(message: string, type: AlertType) {
-        this.alertMessage = message
-        this.alertType = type
-    }
-
-    private resetAlert() {
-        setTimeout(() => {
-            this.alertType = AlertType.SUCCESS
-            this.alertMessage = ''
-        }, 4000)
+    private isNotValidInput() {
+        return !this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms
     }
 
 }
