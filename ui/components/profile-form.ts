@@ -65,15 +65,18 @@ export default class ProfileForm extends Vue {
         }
     }
 
-    async created() {
-        const sectors = await this.fetchSectors()
-        this.sectorMap = this.createSectorMap(sectors)
-        this.sectors = this.indentSectors(sectors)
-        this.profile = await this.getProfile() ?? new Profile()
+    created() {
+        this.fetchSectors().then(sectors => {
+            this.sectorMap = this.createSectorMap(sectors)
+            this.sectors = this.indentSectors(sectors)
+        })
+        this.getProfile().then(profile => {
+            this.profile = profile ?? new Profile();
+        });
     }
 
     @Cacheable('sectors')
-    private async fetchSectors() {
+    async fetchSectors() {
         try {
             return await this.apiService.fetchSectors()
         } catch (error) {
@@ -83,7 +86,7 @@ export default class ProfileForm extends Vue {
     }
 
     @Cacheable('profile')
-    private async getProfile() {
+    async getProfile() {
         try {
             return await this.apiService.getProfile()
         } catch (error) {
