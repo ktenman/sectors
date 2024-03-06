@@ -26,20 +26,43 @@ export default class ProfileForm extends Vue {
         return this.profile.sectors.length > 0
     }
 
+    @Cacheable('sectors')
+    async fetchSectors() {
+        try {
+            return await this.apiService.fetchSectors()
+        } catch (error) {
+            this.handleApiError('Failed to load sectors. Please try again.', error)
+            return []
+        }
+    }
+
+    @Cacheable('profile')
+    async getProfile() {
+        try {
+            return await this.apiService.getProfile()
+        } catch (error) {
+            this.handleApiError('Failed to load profile. Please try again.', error)
+        }
+    }
+
+    created() {
+        this.fetchSectors().then(sectors => {
+            this.sectorMap = this.createSectorMap(sectors)
+            this.sectors = this.indentSectors(sectors)
+        })
+        this.getProfile()?.then(profile => {
+            this.profile = profile ?? this.profile
+        })
+    }
+
     toggleSector(event: Event) {
         const target = event.target as HTMLSelectElement
-        const sectorId = parseInt(target.value, 10)
-        if (isNaN(sectorId)) {
-            return
-        }
-
+        if (!target.value) return
+        const sectorId = parseInt(target.value)
         const addChildren = (sector: Sector) => {
-            if (!this.profile.sectors.includes(sector.id)) {
-                this.profile.sectors.push(sector.id)
-            }
+            this.profile.sectors.push(sector.id)
             sector.children.forEach(addChildren)
         }
-
         const sector = this.sectorMap.get(sectorId)
         sector?.children.forEach(addChildren)
     }
@@ -65,60 +88,14 @@ export default class ProfileForm extends Vue {
         }
     }
 
-    created() {
-        this.fetchSectors().then(sectors => {
-            this.sectorMap = this.createSectorMap(sectors)
-            this.sectors = this.indentSectors(sectors)
-        })
-        this.getProfile().then(profile => {
-            this.profile = profile ?? new Profile();
-        });
-    }
-
-    @Cacheable('sectors')
-    async fetchSectors() {
-        try {
-            return await this.apiService.fetchSectors()
-        } catch (error) {
-            this.handleApiError('Failed to load sectors. Please try again.', error)
-            return []
-        }
-    }
-
-    @Cacheable('profile')
-    async getProfile() {
-        try {
-            return await this.apiService.getProfile()
-        } catch (error) {
-            this.handleApiError('Failed to load profile. Please try again.', error)
-        }
-    }
-
     private createSectorMap(sectors: Sector[]) {
         const sectorMap: Map<number, Sector> = new Map()
         const addSectorToMap = (sector: Sector) => {
             sectorMap.set(sector.id, sector)
-            if (sector.children) {
-                sector.children.forEach(addSectorToMap)
-            }
+            sector.children?.forEach(child => addSectorToMap(child))
         }
         sectors.forEach(addSectorToMap)
         return sectorMap
-    }
-
-    private indentSectors(sectors: Sector[], level = 0): Sector[] {
-        const INDENTATION_MULTIPLIER: number = 3
-        let result: Sector[] = []
-        sectors.forEach(sector => {
-            result.push({
-                ...sector,
-                name: '\u00A0'.repeat(level * INDENTATION_MULTIPLIER) + sector.name,
-            })
-            if (sector.children && sector.children.length > 0) {
-                result = result.concat(this.indentSectors(sector.children, level + 1))
-            }
-        })
-        return result
     }
 
     private handleApiError(defaultMessage: string, error: any) {
@@ -135,6 +112,20 @@ export default class ProfileForm extends Vue {
             this.alertMessage = defaultMessage
             this.alertType = AlertType.ERROR
         }
+    }
+
+    private indentSectors(sectors: Sector[], level = 0): Sector[] {
+        let result: Sector[] = []
+        sectors.forEach(sector => {
+            result.push({
+                ...sector,
+                name: '\u00A0'.repeat(level * 3) + sector.name,
+            })
+            if (sector.children && sector.children.length > 0) {
+                result = result.concat(this.indentSectors(sector.children, level + 1))
+            }
+        })
+        return result
     }
 
 }
