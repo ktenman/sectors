@@ -174,7 +174,8 @@ To run end-to-end (E2E) tests on a Unix-based system, follow these steps:
 3. **Run E2E Tests**: Execute the Gradle command to run the E2E tests. Ensure to provide the `headless=true` flag to run the tests in headless mode, suitable for automated testing. Use the following command:
 
     ```bash
-    ./gradlew e2eTest --info -Pheadless=true
+    export E2E=true
+    ./gradlew test --info -Pheadless=true
     ```
 
 4. **Verify Test Results**: After the tests have completed, review the test results for any failures or errors. You can access detailed logs to identify and troubleshoot any issues encountered during the E2E testing process.

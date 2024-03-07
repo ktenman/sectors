@@ -45,27 +45,25 @@ dependencies {
     testImplementation("com.codeborne:selenide:$selenideVersion")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+val isE2ETestEnvironmentEnabled = System.getenv("E2E")?.toBoolean() == true
 
-    if (System.getenv("E2E")?.toBoolean() == true) {
-        configureE2EtestEnvironment()
+val test by tasks.getting(Test::class) {
+    useJUnitPlatform()
+    if (isE2ETestEnvironmentEnabled) {
+        configureE2ETestEnvironment()
     } else {
         exclude("**/e2e/**")
     }
 }
 
-tasks.register<Test>("e2eTest") {
-    group = "E2E tests"
-    description = "Run end-to-end tests"
-    configureE2EtestEnvironment()
-}
-
-fun Test.configureE2EtestEnvironment() {
+fun Test.configureE2ETestEnvironment() {
     include("**/e2e/**")
-    systemProperties["webdriver.chrome.logfile"] = "build/reports/chromedriver.log"
-    systemProperties["webdriver.chrome.verboseLogging"] = "true"
+    val properties = mutableMapOf(
+        "webdriver.chrome.logfile" to "build/reports/chromedriver.log",
+        "webdriver.chrome.verboseLogging" to "true"
+    )
     if (project.hasProperty("headless")) {
-        systemProperties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
+        properties["chromeoptions.args"] = "--headless,--no-sandbox,--disable-gpu"
     }
+    systemProperties.putAll(properties)
 }
