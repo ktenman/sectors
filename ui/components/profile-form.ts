@@ -45,7 +45,6 @@ export default class ProfileForm extends Vue {
             return await this.apiService.getProfile()
         } catch (error) {
             this.handleApiError('Failed to load profile. Please try again.', error)
-            return new Profile()
         }
     }
 
@@ -55,7 +54,6 @@ export default class ProfileForm extends Vue {
             return await this.apiService.fetchSectors()
         } catch (error) {
             this.handleApiError('Failed to load sectors. Please try again.', error)
-            return []
         }
     }
 
