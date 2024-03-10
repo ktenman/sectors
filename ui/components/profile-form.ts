@@ -3,9 +3,9 @@ import {Profile} from '../models/profile'
 import {Sector} from '../models/sector'
 import {AlertType, getAlertBootstrapClass} from '../models/alert-type'
 import {ApiService} from '../services/api-service'
-import {CacheService} from '../services/cache-service'
-import {Cacheable} from '../decorators/cacheable.decorator'
 import {ApiError} from '../models/api-error'
+import {Cacheable} from '../decorators/cacheable.decorator'
+import {CachePut} from '../decorators/cache-put.decorator'
 
 export default class ProfileForm extends Vue {
     profile: Profile = new Profile()
@@ -15,7 +15,6 @@ export default class ProfileForm extends Vue {
     alertType: AlertType | null = null
     formSubmitted: boolean = false
     apiService: ApiService = new ApiService()
-    cacheService: CacheService = new CacheService()
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
@@ -71,6 +70,7 @@ export default class ProfileForm extends Vue {
         return this.alertType !== null && this.alertMessage !== ''
     }
 
+    @CachePut('profile')
     async submitForm() {
         this.formSubmitted = true
         if (this.isNotValidInput()) {
@@ -80,7 +80,7 @@ export default class ProfileForm extends Vue {
             const response = await this.apiService.submitProfile(this.profile)
             this.alertType = AlertType.SUCCESS
             this.alertMessage = response.status === 201 ? 'Profile saved successfully' : 'Profile updated'
-            this.cacheService.setItem<Profile>('profile', this.profile)
+            return this.profile
         } catch (error) {
             this.handleApiError('An unexpected error occurred. Please try again.', error)
         } finally {
@@ -90,7 +90,6 @@ export default class ProfileForm extends Vue {
             }, 4000)
         }
     }
-
     private createSectorMap(sectors: Sector[]) {
         const sectorMap: Map<number, Sector> = new Map()
         const addSectorToMap = (sector: Sector) => {
