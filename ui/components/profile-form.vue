@@ -16,9 +16,7 @@
             <label class="form-label" for="sectors">Sectors:</label>
             <select id="sectors" v-model="profile.sectors" class="form-select form-control-lg custom-height" multiple
                     @change="toggleSector($event)">
-              <option v-for="sector in sectors" :key="sector.id" :value="sector.id">
-                {{ sector.name }}
-              </option>
+              <option v-for="sector in sectors" :key="sector.id" :value="sector.id">{{ sector.name }}</option>
             </select>
             <div v-if="formSubmitted && !atLeastOneSectorSelected" class="text-danger">At least one sector must be
               selected.
@@ -44,8 +42,7 @@
   </div>
 </template>
 
-<script lang="ts" src="./profile-form.ts">
-</script>
+<script lang="ts" src="./profile-form.ts"></script>
 
 <style scoped>
 .custom-height {
