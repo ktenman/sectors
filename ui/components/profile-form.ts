@@ -13,15 +13,18 @@ export default class ProfileForm extends Vue {
     sectorMap: Map<number, Sector> = new Map()
     alertMessage: string = ''
     alertType: AlertType | null = null
-    formSubmitted: boolean = false
     apiService: ApiService = new ApiService()
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
     }
 
-    private get isNameValid() {
-        return !!this.profile.name.trim() && this.profile.name.length <= 30
+    get isNameValid() {
+        return !!this.profile.name.trim()
+    }
+
+    get isFormInvalid() {
+        return !this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms
     }
 
     async created() {
@@ -72,8 +75,7 @@ export default class ProfileForm extends Vue {
 
     @CachePut('profile')
     async submitForm() {
-        this.formSubmitted = true
-        if (this.isNotValidInput()) {
+        if (this.isFormInvalid) {
             return
         }
         try {
@@ -90,6 +92,7 @@ export default class ProfileForm extends Vue {
             }, 4000)
         }
     }
+
     private createSectorMap(sectors: Sector[]) {
         const sectorMap: Map<number, Sector> = new Map()
         const addSectorToMap = (sector: Sector) => {
@@ -127,9 +130,4 @@ export default class ProfileForm extends Vue {
         })
         return result
     }
-
-    private isNotValidInput() {
-        return !this.atLeastOneSectorSelected || !this.isNameValid || !this.profile.agreeToTerms
-    }
-
 }

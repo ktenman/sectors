@@ -10,7 +10,7 @@
             <label class="form-label" for="name">Name:</label>
             <input id="name" v-model="profile.name" :maxlength="64" class="form-control" type="text">
             <div v-if="profile.name.length > 30" class="text-danger">Name must not exceed 30 characters.</div>
-            <div v-if="formSubmitted && !profile.name.trim()" class="text-danger">Name is required</div>
+            <div v-if="!isNameValid" class="text-danger">Name is required</div>
           </div>
           <div class="mb-3">
             <label class="form-label" for="sectors">Sectors:</label>
@@ -20,17 +20,16 @@
                 {{ sector.name }}
               </option>
             </select>
-            <div v-if="formSubmitted && !atLeastOneSectorSelected" class="text-danger">At least one sector must be
-              selected.
-            </div>
+            <div v-if="!atLeastOneSectorSelected" class="text-danger">At least one sector must be selected.</div>
           </div>
           <div class="mb-3 form-check">
             <input id="terms" v-model="profile.agreeToTerms" class="form-check-input" type="checkbox">
             <label class="form-check-label" for="terms">Agree to Terms</label>
-            <div v-if="formSubmitted && !profile.agreeToTerms" class="text-danger">You must agree to the terms.</div>
+            <div v-if="!profile.agreeToTerms" class="text-danger">You must agree to the terms.</div>
           </div>
           <div class="mb-3">
-            <button class="btn btn-primary" type="submit" id="submitFormButton">Submit</button>
+            <button id="submitFormButton" :disabled="isFormInvalid" class="btn btn-primary" type="submit">Submit
+            </button>
           </div>
           <div class="mb-3">
             <div v-if="displayAlert()" id="formAlert" :class="['alert', alertClass()]" role="alert">
