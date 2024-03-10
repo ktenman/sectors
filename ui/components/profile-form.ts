@@ -14,13 +14,14 @@ export default class ProfileForm extends Vue {
     alertMessage: string = ''
     alertType: AlertType | null = null
     apiService: ApiService = new ApiService()
+    formSubmitted: boolean = false
 
     get atLeastOneSectorSelected() {
         return this.profile.sectors.length > 0
     }
 
     get isNameValid() {
-        return !!this.profile.name.trim()
+        return this.profile.name.trim().length <= 30 && !!this.profile.name.trim()
     }
 
     get isFormInvalid() {
@@ -32,6 +33,7 @@ export default class ProfileForm extends Vue {
         this.sectorMap = this.createSectorMap(this.sectors)
         this.sectors = this.indentSectors(this.sectors)
         this.profile = await this.getProfile() ?? this.profile
+        this.formSubmitted = !this.isFormInvalid
     }
 
     alertClass(): string {
@@ -75,6 +77,7 @@ export default class ProfileForm extends Vue {
 
     @CachePut('profile')
     async submitForm() {
+        this.formSubmitted = true
         if (this.isFormInvalid) {
             return
         }
