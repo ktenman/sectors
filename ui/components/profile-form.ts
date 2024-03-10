@@ -31,7 +31,7 @@ export default class ProfileForm extends Vue {
     async created() {
         this.sectors = await this.fetchSectors().then(this.indentSectors)
         this.sectorMap = this.createSectorMap(this.sectors)
-        this.profile = await this.getProfile()
+        this.profile = await this.getProfile() ?? this.profile
         this.formSubmitted = !this.isFormInvalid
     }
 
@@ -55,6 +55,7 @@ export default class ProfileForm extends Vue {
             return await this.apiService.fetchSectors()
         } catch (error) {
             this.handleApiError('Failed to load sectors. Please try again.', error)
+            return []
         }
     }
 
