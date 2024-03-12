@@ -75,8 +75,21 @@ fun Test.configureE2ETestEnvironment() {
     }
     systemProperties.putAll(properties)
 }
+val skipJacoco: Boolean by project.extra
+val jacocoEnabled: Boolean by project.extra
 
+// Set default values for properties
+project.extra["skipJacoco"] = false
+project.extra["jacocoEnabled"] = true
+
+// Later in your script, use these properties
 tasks.withType<JacocoReport> {
+    isEnabled = jacocoEnabled // Use the property to enable or disable Jacoco tasks
+    doFirst {
+        if (skipJacoco) {
+            enabled = false // Conditionally disable Jacoco tasks based on the property
+        }
+    }
     reports {
         xml.required = true
         html.required = true
