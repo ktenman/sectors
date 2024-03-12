@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.2.3"
     id("io.spring.dependency-management") version "1.1.4"
+    id("jacoco")
 }
 
 group = "com.helmes"
@@ -11,6 +12,12 @@ val selenideVersion = "7.2.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
+}
+
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
 }
 
 configurations {
@@ -54,6 +61,8 @@ val test by tasks.getting(Test::class) {
     } else {
         exclude("**/e2e/**")
     }
+    dependsOn(":test", ":jacocoTestReport")
+    finalizedBy(":jacocoTestCoverageVerification")
 }
 
 fun Test.configureE2ETestEnvironment() {
@@ -67,3 +76,13 @@ fun Test.configureE2ETestEnvironment() {
     }
     systemProperties.putAll(properties)
 }
+
+tasks.withType<JacocoReport> {
+    dependsOn("test")
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false // Disable CSV report
+    }
+}
+
