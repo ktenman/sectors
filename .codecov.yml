@@ -1,0 +1,15 @@
+codecov:
+  require_ci_to_pass: true
+  notify:
+    slack:
+      default: off
+      branches: master
+  coverage:
+    precision: 2
+  comment:
+    layout: "header, diff"
+    behavior: default
+    require_changes: false
+    require_base: yes
+  ignore:
+    - "test/**"  # Ignore test files in coverage calculation
