@@ -75,17 +75,13 @@ fun Test.configureE2ETestEnvironment() {
     }
     systemProperties.putAll(properties)
 }
-val skipJacoco: Boolean by project.extra
-val jacocoEnabled: Boolean by project.extra
 
-project.extra["skipJacoco"] = false
-project.extra["jacocoEnabled"] = true
+val skipJacoco: Boolean = false
+val jacocoEnabled: Boolean = true
 tasks.withType<JacocoReport> {
     isEnabled = jacocoEnabled
-    doFirst {
-        if (skipJacoco) {
-            enabled = false
-        }
+    if (skipJacoco) {
+        enabled = false
     }
     reports {
         xml.required = true
