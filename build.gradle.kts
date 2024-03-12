@@ -61,7 +61,6 @@ val test by tasks.getting(Test::class) {
     } else {
         exclude("**/e2e/**")
     }
-    dependsOn(":test", ":jacocoTestReport")
     finalizedBy(":jacocoTestCoverageVerification")
 }
 
@@ -78,7 +77,6 @@ fun Test.configureE2ETestEnvironment() {
 }
 
 tasks.withType<JacocoReport> {
-    dependsOn("test")
     reports {
         xml.required = true
         html.required = true
