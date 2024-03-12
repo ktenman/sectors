@@ -12,7 +12,7 @@ jobs:
       matrix:
         test-type: [ 'unit', 'e2e' ]
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
         with:
           fetch-depth: 1
       - name: Set up JDK 21
@@ -45,7 +45,7 @@ jobs:
     name: 🔨 Build with Docker Compose
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
         with:
           fetch-depth: 1
       - name: Set up Docker Buildx
