@@ -43,7 +43,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache Gradle packages
         if: matrix.test-type == 'unit'
-        uses: actions/cache@v3
+        uses: actions/cache@v4.0.1
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
