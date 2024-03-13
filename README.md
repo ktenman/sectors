@@ -1,8 +1,15 @@
 # Form Handler Application
 
 [![Build & Test](https://github.com/ktenman/sectors/actions/workflows/ci.yml/badge.svg)](https://github.com/ktenman/sectors/actions/workflows/ci.yml)
-[![CodeQL](https://img.shields.io/badge/CodeQL-analyzed-blue.svg)](https://github.com/ktenman/sectors/actions/workflows/github-code-scanning/codeql)
-[![codecov](https://codecov.io/gh/ktenman/sectors/main/graph/badge.svg)](https://codecov.io/gh/ktenman/sectors)
+[![CodeQL](https://img.shields.io/badge/CodeQL-analyzed-blue.svg)](https://github.com/ktenman/sectors/actions/workflows/github-code-scanning/codeql) [![codecov](https://codecov.io/gh/ktenman/sectors/main/graph/badge.svg)](https://codecov.io/gh/ktenman/sectors) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sectors)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sectors&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sectors)
 
 ## Introduction
 
