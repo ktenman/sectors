@@ -96,6 +96,7 @@ sonar {
         property("sonar.projectKey", "sectors")
         property("sonar.organization", "ktenman")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.coverage.exclusions", "src/test/**")
     }
 }
 
