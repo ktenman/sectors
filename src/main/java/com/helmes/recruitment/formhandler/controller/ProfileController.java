@@ -1,6 +1,8 @@
 package com.helmes.recruitment.formhandler.controller;
 
 import com.helmes.recruitment.formhandler.configuration.logging.aspect.Loggable;
+import com.helmes.recruitment.formhandler.domain.Profile;
+import com.helmes.recruitment.formhandler.mapper.ProfileMapper;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
 import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.models.ServiceResult;
@@ -25,18 +27,20 @@ public class ProfileController {
 	@PostMapping
 	@Loggable
 	public ResponseEntity<ProfileDTO> saveProfile(@RequestBody @Valid CreateProfileRequest createProfileRequest) {
-		ServiceResult<ProfileDTO> serviceResult = profileService.saveProfile(createProfileRequest);
+		ServiceResult<Profile> serviceResult = profileService.saveProfile(createProfileRequest);
 		HttpStatus status = switch (serviceResult.outcome()) {
 			case CREATED -> HttpStatus.CREATED;
 			case UPDATED -> HttpStatus.OK;
 		};
-		return ResponseEntity.status(status).body(serviceResult.body());
+		Profile profile = serviceResult.body();
+		return ResponseEntity.status(status).body(ProfileMapper.toDTO(profile));
 	}
 	
 	@GetMapping
 	@Loggable
 	public ProfileDTO getProfile() {
-		return profileService.getProfile();
+		Profile profile = profileService.getProfile();
+		return ProfileMapper.toDTO(profile);
 	}
 	
 }

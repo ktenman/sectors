@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,10 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(description = "Data Transfer Object for representing a sector including its sub-sectors")
-public class SectorDTO implements Serializable, Comparable<SectorDTO> {
-	
-	private static final long serialVersionUID = -143526534123L;
-	
+public class SectorDTO implements Comparable<SectorDTO> {
 	@EqualsAndHashCode.Include
 	@Schema(description = "The unique identifier of the sector", example = "10")
 	private Long id;

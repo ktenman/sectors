@@ -4,7 +4,6 @@ import com.helmes.recruitment.formhandler.configuration.exception.AccessDeniedEx
 import com.helmes.recruitment.formhandler.domain.Profile;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.CreateProfileRequest;
-import com.helmes.recruitment.formhandler.models.ProfileDTO;
 import com.helmes.recruitment.formhandler.models.ServiceResult;
 import com.helmes.recruitment.formhandler.models.ServiceResult.ServiceOutcome;
 import com.helmes.recruitment.formhandler.repository.ProfileRepository;
@@ -32,7 +31,7 @@ public class ProfileService {
 	 * @return the saved profile
 	 */
 	@LockSession
-	public ServiceResult<ProfileDTO> saveProfile(CreateProfileRequest createProfileRequest) {
+	public ServiceResult<Profile> saveProfile(CreateProfileRequest createProfileRequest) {
 		Set<Sector> sectors = sectorService.findSectorsByIds(createProfileRequest.getSectors());
 		UUID sessionId = sessionService.getSession();
 		
@@ -46,7 +45,7 @@ public class ProfileService {
 		Profile savedProfile = profileRepository.save(profile);
 		
 		return new ServiceResult<>(
-				mapProfileToDTO(savedProfile),
+				savedProfile,
 				existingProfile.isPresent() ? ServiceOutcome.UPDATED : ServiceOutcome.CREATED
 		);
 	}
@@ -56,20 +55,10 @@ public class ProfileService {
 	 *
 	 * @return the profile
 	 */
-	public ProfileDTO getProfile() {
+	public Profile getProfile() {
 		UUID sessionId = sessionService.getSession();
 		return profileRepository.findBySessionId(sessionId)
-				.map(this::mapProfileToDTO)
 				.orElseThrow(() -> new AccessDeniedException(String.format(PROFILE_NOT_FOUND_MESSAGE, sessionId)));
-	}
-	
-	private ProfileDTO mapProfileToDTO(Profile profile) {
-		return new ProfileDTO(
-				profile.getId(),
-				profile.getName(),
-				profile.getAgreeToTerms(),
-				profile.getSectors().stream().map(Sector::getId).toList()
-		);
 	}
 	
 }

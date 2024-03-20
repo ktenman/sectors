@@ -1,6 +1,5 @@
 package com.helmes.recruitment.formhandler.service;
 
-import com.helmes.recruitment.formhandler.configuration.RedisConfiguration;
 import com.helmes.recruitment.formhandler.domain.Sector;
 import com.helmes.recruitment.formhandler.models.SectorDTO;
 import com.helmes.recruitment.formhandler.repository.SectorRepository;
@@ -8,13 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static com.helmes.recruitment.formhandler.configuration.RedisConfiguration.ONE_DAY_CACHE;
 
 /**
  * Service class for handling sector-related operations.
@@ -37,32 +34,13 @@ public class SectorService {
 	}
 	
 	/**
-	 * Retrieves all sectors along with their hierarchical structure and caches the result for one day.
-	 * Each sector is transformed into a {@link SectorDTO} that includes child sectors, forming a tree structure.
+	 * Retrieves all sectors and their hierarchy.
 	 *
-	 * @return a Set of {@link SectorDTO} representing the hierarchical structure of sectors.
+	 * @return A Set of {@link SectorDTO} objects representing the sectors and their hierarchy.
 	 */
-	@Cacheable(value = RedisConfiguration.ONE_DAY_CACHE, key = "'sectors'")
-	public Set<SectorDTO> getAllSectors() {
-		List<Sector> parentSectors = sectorRepository.findAllParentSectors();
-		return parentSectors.stream()
-				.map(sector -> mapSectorToDTO(sector, 0))
-				.collect(Collectors.toSet());
-	}
-	
-	private SectorDTO mapSectorToDTO(Sector sector, int currentLevel) {
-		Set<SectorDTO> childDTOs = sector.getChildren().isEmpty() ? Collections.emptySet() :
-				sector.getChildren().stream()
-						.sorted(Comparator.comparing(Sector::getName))
-						.map(childSector -> mapSectorToDTO(childSector, currentLevel + 1))
-						.collect(Collectors.toCollection(LinkedHashSet::new));
-		
-		return SectorDTO.builder()
-				.id(sector.getId())
-				.name(sector.getName())
-				.level(currentLevel)
-				.children(childDTOs)
-				.build();
+	@Cacheable(value = ONE_DAY_CACHE, key = "'sectors'")
+	public List<Sector> getAllSectors() {
+		return sectorRepository.findAllParentSectors();
 	}
 	
 }
