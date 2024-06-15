@@ -30,6 +30,7 @@ public class SectorDTO implements Comparable<SectorDTO> {
 	@Schema(description = "Level of the sector in the hierarchy", example = "1")
 	private int level;
 	
+	@Builder.Default
 	@ArraySchema(arraySchema = @Schema(description = "Set of child sectors under this sector. " +
 			"Each child sector includes an id, name, level, and a set of its own children.",
 			example = "[{'id': 1, 'name': 'Technology', 'level': 2, 'children': []}]"),
