@@ -8,7 +8,7 @@ COPY src /app/src
 
 RUN gradle clean build -x test --no-daemon
 
-FROM bellsoft/liberica-runtime-container:jdk-21-slim-musl
+FROM openjdk:21-slim
 
 WORKDIR /app
 
