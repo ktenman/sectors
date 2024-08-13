@@ -9,7 +9,7 @@ plugins {
 group = "com.helmes"
 version = "0.0.1-SNAPSHOT"
 val springdocOpenApiVersion = "2.6.0"
-val selenideVersion = "7.4.1"
+val selenideVersion = "7.4.2"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
